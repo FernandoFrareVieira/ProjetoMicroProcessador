@@ -1,6 +1,6 @@
 library ieee;
-use ieee.std_logic_1664.all;
-use ieee.numeric_std_all;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
 
 entity ULA is
     port(
@@ -12,11 +12,10 @@ entity ULA is
 end entity;
 
 
-architecture A_ULA of ULA is
-    signal op1,op2,op3,op4,result : std_logic_vector(15 downto 0);
+architecture a_ULA of ULA is
+    signal op1,op2,op3,op4,result : unsigned(15 downto 0);
 
     begin
-
         op1 <= A + B;
         op2 <= A - B;
         op3 <= A nand B;
@@ -26,6 +25,8 @@ architecture A_ULA of ULA is
                 op2 when sel_op = "01"   else
                 op3 when sel_op = "10"   else
                 op4 when sel_op = "11"   else
-                "000000000000000";
+                "0000000000000000";
+                
+        S <= result;
 
-    end architecture;
+end architecture;
