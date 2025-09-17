@@ -10,11 +10,11 @@ architecture a_ULA_tb of ULA_tb is
         port(
             A,B : in unsigned(15 downto 0);
             sel_op : in unsigned(1 downto 0);
-            S : out unsigned(15 downto 0)
+            saida : out unsigned(15 downto 0)
         );
     end component;
 
-    signal A, B, S: unsigned(15 downto 0);
+    signal A, B, saida: unsigned(15 downto 0);
     signal sel_op: unsigned(1 downto 0);
 
     begin
@@ -22,7 +22,7 @@ architecture a_ULA_tb of ULA_tb is
             A => A,
             B => B,
             sel_op => sel_op,
-            S => S
+            saida => saida
         );
 
     process 
