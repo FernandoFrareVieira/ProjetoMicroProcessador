@@ -1,0 +1,94 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity topLevel is
+    port(
+        clk : in std_logic;
+        reset : in std_logic;
+        constante : in unsigned(15 downto 0);
+        wr_en_banco : in std_logic;
+        wr_en_acumuladores : in std_logic;
+        sel_acc: in std_logic;
+        sel_entrada_banco : in std_logic;
+        r_wr_banco : in unsigned(2 downto 0);
+        r_rd_banco : in unsigned(2 downto 0);
+        sel_op : in unsigned(1 downto 0);
+        saida: out unsigned(15 downto 0);
+        carry : out std_logic;
+        overflow : out std_logic
+    );
+end entity;
+
+architecture a_topLevel of topLevel is
+    component bancoreg is
+        port (
+            clk   : in std_logic;
+            wr_en : in std_logic;
+            reset : in std_logic;
+            data_wr : in unsigned(15  downto 0);
+            reg_wr : in unsigned(2 downto 0);
+            reg_r1: in unsigned(2 downto 0);
+            data_out : out unsigned(15 downto 0)
+        
+        );
+    end component;
+
+    component acumuladores is
+         port (
+            clk   : in std_logic;
+            wr_en : in std_logic;
+            reset : in std_logic;
+            data_wr : in unsigned(15 downto 0);
+            sel_acc: in std_logic;
+            data_out : out unsigned(15 downto 0)
+        );
+    end component;
+
+    component ULA is
+        port(
+            A,B : in unsigned(15 downto 0);
+            sel_op : in unsigned(1 downto 0);
+            saida : out unsigned(15 downto 0);
+            carry : out std_logic;
+            overflow : out std_logic
+        );
+    end component;
+
+    signal banco_out_ula_in : unsigned(15 downto 0);
+    signal acc_out_ula_in : unsigned(15 downto 0);
+    signal ula_out : unsigned(15 downto 0);
+    signal banco_in : unsigned(15 downto 0);
+
+    begin
+        bancoreg_inst : bancoreg port map (
+            clk => clk,
+            wr_en => wr_en_banco,
+            reset => reset,
+            data_wr => banco_in,
+            reg_wr => r_wr_banco,
+            reg_r1 => r_rd_banco,
+            data_out => banco_out_ula_in
+        );
+
+        acumuladores_inst : acumuladores port map(
+            clk => clk,
+            wr_en => wr_en_acumuladores,
+            reset => reset,
+            data_wr => ula_out,
+            sel_acc => sel_acc,
+            data_out => acc_out_ula_in
+        );
+
+        ULA_inst : ULA port map(
+            A => banco_out_ula_in,
+            B => acc_out_ula_in,
+            sel_op => sel_op,
+            saida => ula_out,
+            carry => carry,
+            overflow => overflow
+        );
+
+        banco_in <= constante when sel_entrada_banco = '0' else acc_out_ula_in;
+        saida <= ula_out;
+end architecture;

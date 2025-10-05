@@ -7,7 +7,6 @@ entity reg16bits is
         clk,wr_en,reset: in std_logic;
         data_in: in unsigned(15 downto 0);
         data_out: out unsigned(15 downto 0)
-
     );
 end entity;
 
@@ -30,5 +29,3 @@ end process;
 data_out <= registro;
 
 end architecture;
-
-
