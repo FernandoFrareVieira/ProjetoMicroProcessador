@@ -14,7 +14,8 @@ architecture a_topLevel_tb of topLevel_tb is
             wr_en_banco : in std_logic;
             wr_en_acumuladores : in std_logic;
             sel_acc: in std_logic;
-            sel_entrada_banco : in std_logic;
+            ld_or_mov_acc_rn : in std_logic;
+            ld_or_mov_acc : in UNSIGNED(1 downto 0);
             r_wr_banco : in unsigned(2 downto 0);
             r_rd_banco : in unsigned(2 downto 0);
             sel_op : in unsigned(1 downto 0);
@@ -29,7 +30,8 @@ architecture a_topLevel_tb of topLevel_tb is
 
     signal clk, reset : std_logic;
     signal constante : unsigned(15 downto 0);
-    signal wr_en_banco, wr_en_acumuladores, sel_acc, sel_entrada_banco : std_logic;
+    signal wr_en_banco, wr_en_acumuladores, sel_acc, ld_or_mov_acc_rn : std_logic;
+    signal ld_or_mov_acc : unsigned(1 downto 0);
     signal r_wr_banco, r_rd_banco : unsigned(2 downto 0);
     signal sel_op : unsigned(1 downto 0);
     signal saida : unsigned(15 downto 0);
@@ -44,7 +46,8 @@ begin
         wr_en_banco => wr_en_banco,
         wr_en_acumuladores => wr_en_acumuladores,
         sel_acc => sel_acc,
-        sel_entrada_banco => sel_entrada_banco,
+        ld_or_mov_acc_rn => ld_or_mov_acc_rn,
+        ld_or_mov_acc => ld_or_mov_acc,
         r_wr_banco => r_wr_banco,
         r_rd_banco => r_rd_banco,
         sel_op => sel_op,
@@ -85,7 +88,7 @@ begin
         wait for 200 ns;
 
         -- LD R2, 1234
-        sel_entrada_banco <= '0';
+        ld_or_mov_acc_rn <= '0';
         constante <= to_unsigned(1234, 16);
         r_wr_banco <= "010";
         wr_en_banco <= '1';
@@ -93,6 +96,7 @@ begin
         sel_acc <= '0';
         r_rd_banco <= "000";
         sel_op <= "00";
+        ld_or_mov_acc <= "00";
         wait for 100 ns;
         wr_en_banco <= '0';
         constante <= (others => '0');
@@ -104,8 +108,9 @@ begin
         sel_acc <= '0';
         sel_op <= "00";
         wr_en_acumuladores <= '1';
-        sel_entrada_banco <= '1';
+        ld_or_mov_acc_rn <= '0';
         wr_en_banco <= '0';
+        ld_or_mov_acc <= "01";
         wait for 100 ns;
         wr_en_acumuladores <= '0';
         wait for 200 ns; 
@@ -113,11 +118,12 @@ begin
 
         -- MOV R3, A 
         
-        sel_entrada_banco <= '1';
+        ld_or_mov_acc_rn <= '1';
         sel_acc <= '0';
         r_wr_banco <= "011";
         wr_en_banco <= '1';
         wr_en_acumuladores <= '0';
+        ld_or_mov_acc <= "00";
 
         wait for 100 ns;
 
@@ -125,6 +131,34 @@ begin
         wait for 100 ns;
 
         r_rd_banco <= "011";
+
+        wait for 200 ns;
+
+        -- LD A, 5678
+        ld_or_mov_acc_rn <= '0';
+        constante <= to_unsigned(5678, 16);
+        sel_acc <= '0';
+        wr_en_acumuladores <= '1';
+        wr_en_banco <= '0';
+        r_rd_banco <= "000";
+        sel_op <= "00";
+        ld_or_mov_acc <= "00";
+        wait for 100 ns;
+        wr_en_acumuladores <= '0';
+        constante <= (others => '0');
+        wait for 200 ns;
+
+        -- MOV B, R2
+        r_rd_banco <= "010";
+        sel_acc <= '1';
+        ld_or_mov_acc_rn <= '0';
+        wr_en_acumuladores <= '1';
+        wr_en_banco <= '0';
+        sel_op <= "00";
+        ld_or_mov_acc <= "10";
+        wait for 100 ns;
+        wr_en_acumuladores <= '0';
+        wait for 200 ns;
 
         wait; 
     end process;

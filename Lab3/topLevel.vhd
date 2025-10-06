@@ -10,7 +10,8 @@ entity topLevel is
         wr_en_banco : in std_logic;
         wr_en_acumuladores : in std_logic;
         sel_acc: in std_logic;
-        sel_entrada_banco : in std_logic;
+        ld_or_mov_acc_rn : in std_logic; -- '0': acc ← Rn ou const (LD/MOV A,Rn); '1': Rn ← acc (MOV Rn,A)
+        ld_or_mov_acc : in UNSIGNED(1 downto 0); -- 00=LD acc,const; 01=ULA pro acc; 10=MOV acc,Rn
         r_wr_banco : in unsigned(2 downto 0);
         r_rd_banco : in unsigned(2 downto 0);
         sel_op : in unsigned(1 downto 0);
@@ -59,6 +60,7 @@ architecture a_topLevel of topLevel is
     signal acc_out_ula_in : unsigned(15 downto 0);
     signal ula_out : unsigned(15 downto 0);
     signal banco_in : unsigned(15 downto 0);
+    signal acc_in : unsigned(15 downto 0);
 
     begin
         bancoreg_inst : bancoreg port map (
@@ -75,7 +77,7 @@ architecture a_topLevel of topLevel is
             clk => clk,
             wr_en => wr_en_acumuladores,
             reset => reset,
-            data_wr => ula_out,
+            data_wr => acc_in,
             sel_acc => sel_acc,
             data_out => acc_out_ula_in
         );
@@ -89,6 +91,10 @@ architecture a_topLevel of topLevel is
             overflow => overflow
         );
 
-        banco_in <= constante when sel_entrada_banco = '0' else acc_out_ula_in;
+        banco_in <= constante when ld_or_mov_acc_rn = '0' else acc_out_ula_in;
+        acc_in <= constante when ld_or_mov_acc = "00" else
+                           ula_out when ld_or_mov_acc = "01" else
+                           banco_out_ula_in when ld_or_mov_acc = "10" else
+                           (others => '0');                    
         saida <= ula_out;
 end architecture;
