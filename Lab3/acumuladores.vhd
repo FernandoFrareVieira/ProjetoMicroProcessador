@@ -8,7 +8,7 @@ entity acumuladores is
         wr_en : in std_logic;
         reset : in std_logic;
         data_wr : in unsigned(15 downto 0);
-        sel_acc: in std_logic;  -- '0' para A, '1' para B
+        sel_acc: in std_logic;  -- '0' para o acumulador A, '1' para o acumulador B
         data_out : out unsigned(15 downto 0)
     );
 end entity;

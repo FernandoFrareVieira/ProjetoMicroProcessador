@@ -13,7 +13,7 @@
     show_variable_direction: None,
     show_empty_scopes: None,
     show_parameters_in_scopes: None,
-    highlight_focused: None,
+    highlight_focused: Some(false),
     fill_high_values: None,
     primary_button_drag_behavior: None,
     arrow_key_bindings: None,
@@ -28,10 +28,9 @@
             strs: [
                 "toplevel_tb",
                 "uut",
-                "acumuladores_inst",
-                "accb",
+                "bancoreg_inst",
             ],
-            id: Wellen((18)),
+            id: Wellen((7)),
         ))),
         items_tree: (
             items: [
@@ -72,19 +71,25 @@
                     selected: false,
                 ),
                 (
-                    item_ref: (7),
-                    level: 0,
-                    unfolded: true,
-                    selected: false,
-                ),
-                (
                     item_ref: (8),
                     level: 0,
                     unfolded: true,
                     selected: false,
                 ),
                 (
+                    item_ref: (17),
+                    level: 0,
+                    unfolded: true,
+                    selected: false,
+                ),
+                (
                     item_ref: (9),
+                    level: 0,
+                    unfolded: true,
+                    selected: false,
+                ),
+                (
+                    item_ref: (19),
                     level: 0,
                     unfolded: true,
                     selected: false,
@@ -128,23 +133,186 @@
             ],
         ),
         displayed_items: {
-            (16): Variable((
+            (14): Variable((
                 variable_ref: (
                     path: (
                         strs: [
                             "toplevel_tb",
                             "uut",
-                            "acumuladores_inst",
-                            "accb",
+                            "bancoreg_inst",
+                            "reg3",
                         ],
-                        id: Wellen((18)),
+                        id: Wellen((11)),
                     ),
                     name: "data_out",
-                    id: Wellen((138)),
+                    id: Wellen((90)),
                 ),
-                color: Some("Gray"),
+                color: Some("Orange"),
                 background_color: None,
-                display_name: "…accb.data_out [15:0]",
+                display_name: "…reg3.data_out [15:0]",
+                display_name_type: Unique,
+                manual_name: None,
+                format: None,
+                field_formats: [],
+                height_scaling_factor: None,
+            )),
+            (9): Variable((
+                variable_ref: (
+                    path: (
+                        strs: [
+                            "toplevel_tb",
+                        ],
+                        id: Wellen((5)),
+                    ),
+                    name: "wr_en_banco",
+                    id: Wellen((5)),
+                ),
+                color: None,
+                background_color: None,
+                display_name: "wr_en_banco",
+                display_name_type: Unique,
+                manual_name: None,
+                format: None,
+                field_formats: [],
+                height_scaling_factor: None,
+            )),
+            (11): Variable((
+                variable_ref: (
+                    path: (
+                        strs: [
+                            "toplevel_tb",
+                        ],
+                        id: Wellen((5)),
+                    ),
+                    name: "sel_acc",
+                    id: Wellen((7)),
+                ),
+                color: None,
+                background_color: None,
+                display_name: "sel_acc",
+                display_name_type: Unique,
+                manual_name: None,
+                format: None,
+                field_formats: [],
+                height_scaling_factor: None,
+            )),
+            (6): Variable((
+                variable_ref: (
+                    path: (
+                        strs: [
+                            "toplevel_tb",
+                        ],
+                        id: Wellen((5)),
+                    ),
+                    name: "r_wr_banco",
+                    id: Wellen((10)),
+                ),
+                color: None,
+                background_color: None,
+                display_name: "r_wr_banco [2:0]",
+                display_name_type: Unique,
+                manual_name: None,
+                format: None,
+                field_formats: [],
+                height_scaling_factor: None,
+            )),
+            (4): Variable((
+                variable_ref: (
+                    path: (
+                        strs: [
+                            "toplevel_tb",
+                        ],
+                        id: Wellen((5)),
+                    ),
+                    name: "ld_or_mov_acc_rn",
+                    id: Wellen((8)),
+                ),
+                color: None,
+                background_color: None,
+                display_name: "ld_or_mov_acc_rn",
+                display_name_type: Unique,
+                manual_name: None,
+                format: None,
+                field_formats: [],
+                height_scaling_factor: None,
+            )),
+            (17): Variable((
+                variable_ref: (
+                    path: (
+                        strs: [
+                            "toplevel_tb",
+                        ],
+                        id: Wellen((5)),
+                    ),
+                    name: "saida_ula",
+                    id: Wellen((13)),
+                ),
+                color: None,
+                background_color: None,
+                display_name: "saida_ula [15:0]",
+                display_name_type: Unique,
+                manual_name: None,
+                format: None,
+                field_formats: [],
+                height_scaling_factor: None,
+            )),
+            (8): Variable((
+                variable_ref: (
+                    path: (
+                        strs: [
+                            "toplevel_tb",
+                        ],
+                        id: Wellen((5)),
+                    ),
+                    name: "wr_en_acumuladores",
+                    id: Wellen((6)),
+                ),
+                color: None,
+                background_color: None,
+                display_name: "wr_en_acumuladores",
+                display_name_type: Unique,
+                manual_name: None,
+                format: None,
+                field_formats: [],
+                height_scaling_factor: None,
+            )),
+            (12): Variable((
+                variable_ref: (
+                    path: (
+                        strs: [
+                            "toplevel_tb",
+                            "uut",
+                            "bancoreg_inst",
+                            "reg2",
+                        ],
+                        id: Wellen((10)),
+                    ),
+                    name: "data_out",
+                    id: Wellen((84)),
+                ),
+                color: Some("Orange"),
+                background_color: None,
+                display_name: "…reg2.data_out [15:0]",
+                display_name_type: Unique,
+                manual_name: None,
+                format: None,
+                field_formats: [],
+                height_scaling_factor: None,
+            )),
+            (5): Variable((
+                variable_ref: (
+                    path: (
+                        strs: [
+                            "toplevel_tb",
+                        ],
+                        id: Wellen((5)),
+                    ),
+                    name: "r_rd_banco",
+                    id: Wellen((11)),
+                ),
+                color: None,
+                background_color: None,
+                display_name: "r_rd_banco [2:0]",
                 display_name_type: Unique,
                 manual_name: None,
                 format: None,
@@ -171,7 +339,7 @@
                 field_formats: [],
                 height_scaling_factor: None,
             )),
-            (5): Variable((
+            (1): Variable((
                 variable_ref: (
                     path: (
                         strs: [
@@ -179,12 +347,58 @@
                         ],
                         id: Wellen((5)),
                     ),
-                    name: "r_rd_banco",
-                    id: Wellen((11)),
+                    name: "clk",
+                    id: Wellen((2)),
                 ),
                 color: None,
                 background_color: None,
-                display_name: "r_rd_banco [2:0]",
+                display_name: "clk",
+                display_name_type: Unique,
+                manual_name: None,
+                format: None,
+                field_formats: [],
+                height_scaling_factor: None,
+            )),
+            (13): Variable((
+                variable_ref: (
+                    path: (
+                        strs: [
+                            "toplevel_tb",
+                            "uut",
+                            "acumuladores_inst",
+                            "acca",
+                        ],
+                        id: Wellen((17)),
+                    ),
+                    name: "data_out",
+                    id: Wellen((132)),
+                ),
+                color: Some("Gray"),
+                background_color: None,
+                display_name: "…acca.data_out [15:0]",
+                display_name_type: Unique,
+                manual_name: None,
+                format: None,
+                field_formats: [],
+                height_scaling_factor: None,
+            )),
+            (16): Variable((
+                variable_ref: (
+                    path: (
+                        strs: [
+                            "toplevel_tb",
+                            "uut",
+                            "acumuladores_inst",
+                            "accb",
+                        ],
+                        id: Wellen((18)),
+                    ),
+                    name: "data_out",
+                    id: Wellen((138)),
+                ),
+                color: Some("Gray"),
+                background_color: None,
+                display_name: "…accb.data_out [15:0]",
                 display_name_type: Unique,
                 manual_name: None,
                 format: None,
@@ -231,209 +445,22 @@
                 field_formats: [],
                 height_scaling_factor: None,
             )),
-            (14): Variable((
+            (19): Variable((
                 variable_ref: (
                     path: (
                         strs: [
                             "toplevel_tb",
                             "uut",
                             "bancoreg_inst",
-                            "reg3",
                         ],
-                        id: Wellen((11)),
+                        id: Wellen((7)),
                     ),
                     name: "data_out",
-                    id: Wellen((90)),
-                ),
-                color: Some("Orange"),
-                background_color: None,
-                display_name: "…reg3.data_out [15:0]",
-                display_name_type: Unique,
-                manual_name: None,
-                format: None,
-                field_formats: [],
-                height_scaling_factor: None,
-            )),
-            (8): Variable((
-                variable_ref: (
-                    path: (
-                        strs: [
-                            "toplevel_tb",
-                        ],
-                        id: Wellen((5)),
-                    ),
-                    name: "wr_en_acumuladores",
-                    id: Wellen((6)),
+                    id: Wellen((41)),
                 ),
                 color: None,
                 background_color: None,
-                display_name: "wr_en_acumuladores",
-                display_name_type: Unique,
-                manual_name: None,
-                format: None,
-                field_formats: [],
-                height_scaling_factor: None,
-            )),
-            (13): Variable((
-                variable_ref: (
-                    path: (
-                        strs: [
-                            "toplevel_tb",
-                            "uut",
-                            "acumuladores_inst",
-                            "acca",
-                        ],
-                        id: Wellen((17)),
-                    ),
-                    name: "data_out",
-                    id: Wellen((132)),
-                ),
-                color: Some("Gray"),
-                background_color: None,
-                display_name: "…acca.data_out [15:0]",
-                display_name_type: Unique,
-                manual_name: None,
-                format: None,
-                field_formats: [],
-                height_scaling_factor: None,
-            )),
-            (1): Variable((
-                variable_ref: (
-                    path: (
-                        strs: [
-                            "toplevel_tb",
-                        ],
-                        id: Wellen((5)),
-                    ),
-                    name: "clk",
-                    id: Wellen((2)),
-                ),
-                color: None,
-                background_color: None,
-                display_name: "clk",
-                display_name_type: Unique,
-                manual_name: None,
-                format: None,
-                field_formats: [],
-                height_scaling_factor: None,
-            )),
-            (6): Variable((
-                variable_ref: (
-                    path: (
-                        strs: [
-                            "toplevel_tb",
-                        ],
-                        id: Wellen((5)),
-                    ),
-                    name: "r_wr_banco",
-                    id: Wellen((10)),
-                ),
-                color: None,
-                background_color: None,
-                display_name: "r_wr_banco [2:0]",
-                display_name_type: Unique,
-                manual_name: None,
-                format: None,
-                field_formats: [],
-                height_scaling_factor: None,
-            )),
-            (12): Variable((
-                variable_ref: (
-                    path: (
-                        strs: [
-                            "toplevel_tb",
-                            "uut",
-                            "bancoreg_inst",
-                            "reg2",
-                        ],
-                        id: Wellen((10)),
-                    ),
-                    name: "data_out",
-                    id: Wellen((84)),
-                ),
-                color: Some("Orange"),
-                background_color: None,
-                display_name: "…reg2.data_out [15:0]",
-                display_name_type: Unique,
-                manual_name: None,
-                format: None,
-                field_formats: [],
-                height_scaling_factor: None,
-            )),
-            (7): Variable((
-                variable_ref: (
-                    path: (
-                        strs: [
-                            "toplevel_tb",
-                        ],
-                        id: Wellen((5)),
-                    ),
-                    name: "saida",
-                    id: Wellen((13)),
-                ),
-                color: None,
-                background_color: None,
-                display_name: "saida [15:0]",
-                display_name_type: Unique,
-                manual_name: None,
-                format: None,
-                field_formats: [],
-                height_scaling_factor: None,
-            )),
-            (9): Variable((
-                variable_ref: (
-                    path: (
-                        strs: [
-                            "toplevel_tb",
-                        ],
-                        id: Wellen((5)),
-                    ),
-                    name: "wr_en_banco",
-                    id: Wellen((5)),
-                ),
-                color: None,
-                background_color: None,
-                display_name: "wr_en_banco",
-                display_name_type: Unique,
-                manual_name: None,
-                format: None,
-                field_formats: [],
-                height_scaling_factor: None,
-            )),
-            (4): Variable((
-                variable_ref: (
-                    path: (
-                        strs: [
-                            "toplevel_tb",
-                        ],
-                        id: Wellen((5)),
-                    ),
-                    name: "ld_or_mov_acc_rn",
-                    id: Wellen((8)),
-                ),
-                color: None,
-                background_color: None,
-                display_name: "ld_or_mov_acc_rn",
-                display_name_type: Unique,
-                manual_name: None,
-                format: None,
-                field_formats: [],
-                height_scaling_factor: None,
-            )),
-            (11): Variable((
-                variable_ref: (
-                    path: (
-                        strs: [
-                            "toplevel_tb",
-                        ],
-                        id: Wellen((5)),
-                    ),
-                    name: "sel_acc",
-                    id: Wellen((7)),
-                ),
-                color: None,
-                background_color: None,
-                display_name: "sel_acc",
+                display_name: "…bancoreg_inst.data_out [15:0]",
                 display_name_type: Unique,
                 manual_name: None,
                 format: None,
@@ -441,11 +468,11 @@
                 height_scaling_factor: None,
             )),
         },
-        display_item_ref_counter: 16,
+        display_item_ref_counter: 19,
         viewports: [
             (
-                curr_left: (-0.2),
-                curr_right: (1.2),
+                curr_left: (0.0),
+                curr_right: (1.0),
                 target_left: (0.0),
                 target_right: (1.0),
                 move_start_left: (0.0),
@@ -455,10 +482,10 @@
             ),
         ],
         cursor: Some((1, [
-            1708825872,
+            500000000,
         ])),
         markers: {},
-        focused_item: Some((13)),
+        focused_item: Some((11)),
         focused_transaction: (None, None),
         default_variable_name_type: Unique,
         scroll_offset: 0.0,
@@ -467,10 +494,7 @@
     )),
     drag_started: false,
     drag_source_idx: None,
-    drag_target_idx: Some((
-        before: (13),
-        level: 0,
-    )),
+    drag_target_idx: None,
     previous_waves: None,
     count: None,
     blacklisted_translators: [],
@@ -497,6 +521,6 @@
         group_by_direction: false,
     ),
     rename_target: None,
-    sidepanel_width: Some(464.0),
+    sidepanel_width: Some(300.0),
     ui_zoom_factor: None,
 )

@@ -19,7 +19,7 @@ architecture a_topLevel_tb of topLevel_tb is
             r_wr_banco : in unsigned(2 downto 0);
             r_rd_banco : in unsigned(2 downto 0);
             sel_op : in unsigned(1 downto 0);
-            saida: out unsigned(15 downto 0);
+            saida_ula: out unsigned(15 downto 0);
             carry : out std_logic;
             overflow : out std_logic
         );
@@ -34,7 +34,7 @@ architecture a_topLevel_tb of topLevel_tb is
     signal ld_or_mov_acc : unsigned(1 downto 0);
     signal r_wr_banco, r_rd_banco : unsigned(2 downto 0);
     signal sel_op : unsigned(1 downto 0);
-    signal saida : unsigned(15 downto 0);
+    signal saida_ula : unsigned(15 downto 0);
     signal carry, overflow : std_logic;
 
 begin
@@ -51,7 +51,7 @@ begin
         r_wr_banco => r_wr_banco,
         r_rd_banco => r_rd_banco,
         sel_op => sel_op,
-        saida => saida,
+        saida_ula => saida_ula,
         carry => carry,
         overflow => overflow
     );
@@ -159,6 +159,18 @@ begin
         wait for 100 ns;
         wr_en_acumuladores <= '0';
         wait for 200 ns;
+
+        -- SUB B, R3 
+        r_rd_banco <= "010";
+        sel_acc <= '1';
+        sel_op <= "01";
+        wr_en_acumuladores <= '1';
+        ld_or_mov_acc_rn <= '0';
+        wr_en_banco <= '0';
+        ld_or_mov_acc <= "01";
+        wait for 100 ns;
+        wr_en_acumuladores <= '0';
+        wait for 200 ns; 
 
         wait; 
     end process;

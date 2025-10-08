@@ -5,12 +5,12 @@ file . ".\ULA.vhd" "ab2d94c667374b8c1d1bbc8805e082d7a5a3da56" "20251006020758.54
 file . ".\bancoreg.vhd" "148add4c1dee8906f803532f9485b2e1c691cddf" "20251006020716.826":
   entity bancoreg at 1( 0) + 0 on 249;
   architecture a_bancoreg of bancoreg at 19( 411) + 0 on 250;
-file . "topLevel_tb.vhd" "1cc9551029be0976d0ebc36d9527fc12ae819e3c" "20251006161439.466":
-  entity toplevel_tb at 1( 0) + 0 on 261;
-  architecture a_toplevel_tb of toplevel_tb at 8( 112) + 0 on 262;
-file . "acumuladores.vhd" "83f649966ca2f848133268770f20d61f3c86425b" "20251006020745.404":
-  entity acumuladores at 1( 0) + 0 on 251;
-  architecture a_acumuladores of acumuladores at 16( 376) + 0 on 252;
+file . "topLevel_tb.vhd" "e9ed90cd87a5fac8502cbcacc198c84ceb4c292c" "20251008224935.225":
+  entity toplevel_tb at 1( 0) + 0 on 277;
+  architecture a_toplevel_tb of toplevel_tb at 8( 112) + 0 on 278;
+file . "acumuladores.vhd" "2af26b21ae4946d05a9cddd13fc6bcf3ad28414a" "20251008224250.332":
+  entity acumuladores at 1( 0) + 0 on 273;
+  architecture a_acumuladores of acumuladores at 16( 402) + 0 on 274;
 file . "reg16bitsTB.vhd" "448c31b5de269cd97c536589958e961c0e6e33c6" "20251006020827.142":
   entity reg16bitstb at 1( 0) + 0 on 255;
   architecture tb of reg16bitstb at 8( 112) + 0 on 256;
@@ -23,6 +23,6 @@ file . "bancoregTB.vhd" "16ca7bae9cdd99b6bacbbf4bb059cef6ff7a0a62" "202510041330
 file . "acumuladoresTB.vhd" "556f6be862e6fe58b3e8541beebb78ed55513e6b" "20251004140054.811":
   entity acumuladorestb at 1( 0) + 0 on 191;
   architecture acumuladorestb of acumuladorestb at 8( 115) + 0 on 192;
-file . "topLevel.vhd" "814d1bd8fcc293ce1e34a85bf777cba67436c0db" "20251006015527.254":
-  entity toplevel at 1( 0) + 0 on 245;
-  architecture a_toplevel of toplevel at 24( 806) + 0 on 246;
+file . "topLevel.vhd" "d97c420839c9c1403e7b571950f3d52d744cc924" "20251008224145.533":
+  entity toplevel at 1( 0) + 0 on 271;
+  architecture a_toplevel of toplevel at 24( 810) + 0 on 272;

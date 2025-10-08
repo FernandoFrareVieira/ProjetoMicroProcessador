@@ -15,7 +15,7 @@ entity topLevel is
         r_wr_banco : in unsigned(2 downto 0);
         r_rd_banco : in unsigned(2 downto 0);
         sel_op : in unsigned(1 downto 0);
-        saida: out unsigned(15 downto 0);
+        saida_ula: out unsigned(15 downto 0);
         carry : out std_logic;
         overflow : out std_logic
     );
@@ -91,10 +91,13 @@ architecture a_topLevel of topLevel is
             overflow => overflow
         );
 
+        -- Define a entrada do banco de registradores: se ld_or_mov_acc_rn = '0', carrega constante; senão, MOV Rn, Acc
         banco_in <= constante when ld_or_mov_acc_rn = '0' else acc_out_ula_in;
+        -- Define a entrada dos acumuladores: "00"=LD acc,const; "01"=resultado da ULA; "10"=MOV acc,Rn; senão, zeros
         acc_in <= constante when ld_or_mov_acc = "00" else
                            ula_out when ld_or_mov_acc = "01" else
                            banco_out_ula_in when ld_or_mov_acc = "10" else
                            (others => '0');                    
-        saida <= ula_out;
+        -- Saída da ULA é passada diretamente para a saída do módulo
+        saida_ula <= ula_out;
 end architecture;
