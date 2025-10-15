@@ -6,7 +6,9 @@ use ieee.numeric_std.all;
 entity topLevel is
     port (
         clk   : in std_logic;
-        reset : in std_logic
+        reset : in std_logic;
+        saida_pc        : out unsigned(6 downto 0);
+        saida_instrucao : out unsigned(17 downto 0)
     );
 end entity;
 
@@ -57,7 +59,7 @@ architecture a_topLevel of TopLevel is
 
 begin
 
-        UC_inst: UC
+    UC_inst: UC
      port map(
         instruc => instuct,
         clk => clk,
@@ -71,7 +73,7 @@ begin
         clk => clk,
         reset => reset,
         wr_en => pc_wr_en,
-        data_in => somador_out_pc_in,
+        data_in => pc_data_in,
         data_out => pc_data_out_somador_in
     );
 
@@ -79,7 +81,7 @@ begin
      port map(
         data_in => pc_data_out_somador_in,
         data_out => somador_out_pc_in
-    );
+    );  
 
     rom_inst: rom
      port map(
@@ -89,5 +91,8 @@ begin
     );
 
     pc_data_in <= somador_out_pc_in when jump_en = '0' else instuct(12 downto 6);
+
+    saida_pc <= pc_data_out_somador_in;
+    saida_instrucao <= instuct;
 
 end architecture;

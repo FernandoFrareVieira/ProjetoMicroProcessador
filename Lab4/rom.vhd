@@ -12,22 +12,14 @@ end entity;
 architecture a_rom of rom is
     type mem is array (0 to 127) of unsigned(17 downto 0);
     constant conteudo_rom : mem := (
-        0 => TO_UNSIGNED(13,18),
-        1 => TO_UNSIGNED(14,18),
-        2 => TO_UNSIGNED(15,18),
-        3 => TO_UNSIGNED(16,18),
-        4 => TO_UNSIGNED(17,18),
-        5 => TO_UNSIGNED(18,18),
-        6 => TO_UNSIGNED(19,18),
-        7 => TO_UNSIGNED(20,18),
-        8 => TO_UNSIGNED(21,18),
-        9 => TO_UNSIGNED(22,18),
-        10 => TO_UNSIGNED(23,18),
-        11 => TO_UNSIGNED(24,18),
-        12 => TO_UNSIGNED(25,18),
-        13 => TO_UNSIGNED(26,18),
-        14 => TO_UNSIGNED(27,18),
-        15 => TO_UNSIGNED(28,18),
+        0      => "000000000000000000", -- NOP
+        1      => "000000000100001111", -- JUMP 4 (Salto para frente)
+        2      => "000000000000000000", -- NOP (Deve ser pulado)
+        3      => "000000000000000000", -- NOP (Deve ser pulado)
+        4      => "000000000000000000", -- NOP (Alvo do pulo e início do loop)
+        5      => "000000000000000000", -- NOP
+        6      => "000000000100001111", -- JUMP 4 (Salto para trás, cria o loop)
+        7      => "000000000000000000", -- NOP (Nunca deve ser alcançado)
         others => (others=>'0')
     );
 begin

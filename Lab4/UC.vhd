@@ -42,9 +42,6 @@ begin
 
     pc_wr_en <= '0' when estado = '0' else '1';--FETCH
     jump_en <= '1'  when (opcode = "1111" and func = "00" and estado = '1') else '0';
-
-
-
     
 
 end architecture;
