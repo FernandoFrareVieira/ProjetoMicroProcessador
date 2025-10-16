@@ -25,7 +25,7 @@ end component;
 
 begin
 
-    reg18bits_inst: reg07bits
+    reg07bits_inst: reg07bits
      port map(
         clk => clk,
         wr_en => wr_en,

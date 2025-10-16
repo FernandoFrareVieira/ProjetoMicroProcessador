@@ -9,8 +9,10 @@ architecture a_tb of topLevel_tb is
 
     component topLevel is
         port (
-            clk             : in  std_logic;
-            reset           : in  std_logic;
+            clk   : in std_logic;
+            reset : in std_logic;
+            pc_write_en : out std_logic;
+            jump_enable : out std_logic;
             saida_pc        : out unsigned(6 downto 0);
             saida_instrucao : out unsigned(17 downto 0)
         );
@@ -21,6 +23,8 @@ architecture a_tb of topLevel_tb is
 
     signal clk_s   : std_logic;
     signal reset_s : std_logic;
+    signal pc_write_en_s : std_logic;
+    signal jump_enable_s : std_logic;
     signal saida_pc_s        : unsigned(6 downto 0);
     signal saida_instrucao_s : unsigned(17 downto 0);
 
@@ -29,6 +33,8 @@ begin
     uut: topLevel port map (
         clk             => clk_s,
         reset           => reset_s,
+        pc_write_en     => pc_write_en_s,
+        jump_enable     => jump_enable_s,
         saida_pc        => saida_pc_s,
         saida_instrucao => saida_instrucao_s
     );
@@ -60,30 +66,7 @@ begin
     end process clk_proc;
 
     process
-    begin
-        wait for 200 ns;
-
-        -- Ciclo 1: PC=0, Executa NOP
-        wait for 100 ns;
-
-        -- Ciclo 2: PC=1, Executa NOP
-        wait for 100 ns;
-
-        -- Ciclo 3: PC=2, Executa JUMP 5
-        wait for 100 ns;
-
-        -- Ciclo 4: PC=5, Executa NOP
-        wait for 100 ns;
-
-        -- Ciclo 5: PC=6, Executa JUMP 5
-        wait for 100 ns;
-
-        -- Ciclo 6: PC=5, Executa NOP
-        wait for 100 ns;
-
-        -- Ciclo 7: PC=6, Executa JUMP 5
-        wait for 100 ns;
-
+        begin
         wait; 
     end process;
 

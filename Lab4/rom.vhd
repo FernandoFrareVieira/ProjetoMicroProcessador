@@ -9,6 +9,9 @@ entity rom is
         dado     : out unsigned( 17 downto 0)  
     );
 end entity;
+--Esse programa simples apenas pula para frente, simulando um condicional, e depois tem um pulo para tras, simulando um loop.  
+--Contandos os Clocks pelo arquivo ghw, vemos que o programa precisa de 10 clocks para completar to\do seu funcionamento, sendo elas as instruções nas posições: 0,1,4,5,6. 
+--Isso acontece principalmente porque temos um estado para pegar a instrução(FETCH), e outro executa-la, isso adiciona um ciclo de 2 clocks para cada instrução.
 architecture a_rom of rom is
     type mem is array (0 to 127) of unsigned(17 downto 0);
     constant conteudo_rom : mem := (

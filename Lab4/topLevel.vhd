@@ -7,6 +7,8 @@ entity topLevel is
     port (
         clk   : in std_logic;
         reset : in std_logic;
+        pc_write_en : out std_logic;
+        jump_enable : out std_logic;
         saida_pc        : out unsigned(6 downto 0);
         saida_instrucao : out unsigned(17 downto 0)
     );
@@ -94,5 +96,8 @@ begin
 
     saida_pc <= pc_data_out_somador_in;
     saida_instrucao <= instuct;
+
+    pc_write_en <= pc_wr_en;
+    jump_enable <= jump_en;
 
 end architecture;
