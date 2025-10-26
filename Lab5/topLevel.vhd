@@ -53,6 +53,7 @@ architecture a_topLevel of topLevel is
             jump_en               : out std_logic;
             banco_wr_en           : out std_logic;
             acc_wr_en             : out std_logic;
+            estado_atual          : out UNSIGNED(1 downto 0);
             instr_ld_rn_const_en  : out std_logic;
             instr_mov_rn_acc_en   : out std_logic;
             instr_mov_acc_rn_en   : out std_logic;
@@ -132,6 +133,7 @@ architecture a_topLevel of topLevel is
     signal uc_reg_instr_wr_en        : std_logic;
     signal uc_banco_wr_en            : std_logic;
     signal uc_acc_wr_en              : std_logic;
+    signal uc_estado_atual           : unsigned(1 downto 0);
     signal uc_instr_ld_rn_const_en   : std_logic;
     signal uc_instr_mov_rn_acc_en    : std_logic;
     signal uc_instr_mov_acc_rn_en    : std_logic;
@@ -202,6 +204,7 @@ begin
             jump_en               => uc_jump_en,
             banco_wr_en           => uc_banco_wr_en,
             acc_wr_en             => uc_acc_wr_en,
+            estado_atual          => uc_estado_atual,
             instr_ld_rn_const_en  => uc_instr_ld_rn_const_en,
             instr_mov_rn_acc_en   => uc_instr_mov_rn_acc_en,
             instr_mov_acc_rn_en   => uc_instr_mov_acc_rn_en,
@@ -263,7 +266,7 @@ begin
 
 
     --MUXES
-    pc_in <= instr_reg_out(11 downto 5) when uc_jump_en = '1' else soma1_out; -- mux que controla se é jump ou pc+1
+    pc_in <= instr_reg_out(11 downto 5) when uc_jump_en = '1' and uc_estado_atual = "11"  else soma1_out; -- mux que controla se é jump ou pc+1
     bancreg_data <= const_ext when uc_instr_ld_rn_const_en = '1' and uc_instr_mov_rn_acc_en = '0' else acc_out; --mux que controla se é LD no banco ou MOV de um registrador
     acc_data_wr <= const_ext when uc_instr_ld_acc_const_en = '1' else ula_out when uc_instr_op_en = '1' else bancreg_out when uc_instr_mov_acc_rn_en = '1' else (others=>'0'); --mux que controla o que vai pro acc;
 

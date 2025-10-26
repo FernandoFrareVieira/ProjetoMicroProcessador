@@ -20,13 +20,13 @@ architecture a_processador_tb of processador_tb is
     signal reset    : std_logic := '0';
 
 begin
-
+    -- toplevel do processador
     uut: topLevel
         port map(
             clk   => clk,
             reset => reset
         );
-
+            
     reset_global: process
     begin
         reset <= '1';
@@ -37,7 +37,7 @@ begin
 
     sim_time_proc: process
     begin
-        wait for 15 us;
+        wait for 30 us;
         finished <= '1';
         wait;
     end process sim_time_proc;

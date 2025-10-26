@@ -30,8 +30,11 @@ architecture a_rom2 of rom2 is
         12     => B"0000000000000_00_000", -- NOP (Deve ser pulado)
         13     => B"0000000000000_00_000", -- NOP (Deve ser pulado)
         14     => B"0000000000000_00_000", -- NOP (Deve ser pulado)
-        20     => B"000000_0000011_00_111",   -- JUMP 3
-        21     => B"0000000_000_011_01_001", -- LD R3 0 Nunca sera executada
+        20     => B"0000000_00000_1_00_001", -- LD B 0
+        21     => B"0000000_00_101_1_00_011", -- ADD B R5
+        22     => B"0000000_00_011_1_01_010", -- MOV R3 B
+        23     => B"000000_0000011_00_111",   -- JUMP 3
+        24     => B"0000000_000_011_01_001", -- LD R3 0 Nunca sera executada 
         others => (others=>'0')
     );
 begin

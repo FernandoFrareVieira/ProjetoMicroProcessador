@@ -13,6 +13,7 @@ entity UC is
         jump_en : out std_logic;   -- Comando de Jump que controla o MUX do jump
         banco_wr_en : out std_logic;
         acc_wr_en : out std_logic;
+        estado_atual :  out UNSIGNED(1 downto 0);
         instr_ld_rn_const_en : out std_logic; -- LD rn cons
         instr_mov_rn_acc_en : out std_logic; -- MOV rn acc;
         instr_mov_acc_rn_en : out std_logic; -- MOV acc rn;
@@ -108,5 +109,8 @@ begin
     --Seleção de operação na ULA
 
     select_op <= "00" when instr_op_soma = '1' else "01" when instr_op_sub = '1' else "00";
+
+    --Controle de Estado
+    estado_atual <= estado;
 
 end architecture;
