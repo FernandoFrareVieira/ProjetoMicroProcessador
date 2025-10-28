@@ -23,7 +23,7 @@ architecture a_topLevel of topLevel is
     end component;
 
     -- Componente: ROM
-    component rom2 is
+    component rom is
         port (
             clk      : in std_logic;
             endereco : in unsigned(6 downto 0);
@@ -176,7 +176,7 @@ begin
         );
 
     -- Instância da ROM
-    rom_inst: rom2
+    rom_inst: rom
         port map(
             clk      => clk,
             endereco => pc_out,
@@ -262,8 +262,6 @@ begin
             data_out => soma1_out
         );
         
-    -- TODO: Conectar os sinais internos conforme a arquitetura do processador
-
 
     --MUXES
     pc_in <= instr_reg_out(11 downto 5) when uc_jump_en = '1' and uc_estado_atual = "11"  else soma1_out; -- mux que controla se é jump ou pc+1

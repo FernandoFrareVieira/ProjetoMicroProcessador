@@ -1,0 +1,33 @@
+-- Passo A:
+LD R3, 5
+
+-- Passo B: 
+LD R4, 8
+
+-- Passo C:
+MOV A, R3     
+ADD A, R4
+MOV R5, A
+
+-- Passo D 
+PASSO_D:
+LD A, 1       
+SUB A, R5
+MOV R5, A
+
+-- Passo E; Pula para o passo G (endereço 20)
+JUMP 20     
+
+-- Passo F (nunca será eexecutado)
+LD R5, 0
+
+-- Passo G
+LD B, 0
+ADD B, R5
+MOV R3, B
+
+-- Passo H; Pula para o passo C (endereço 2)
+JUMP 2      
+
+-- Passo I (nunca será executado)
+LD R3, 0
