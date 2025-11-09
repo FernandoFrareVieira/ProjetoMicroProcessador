@@ -376,8 +376,6 @@ begin
     --ENTRADAS DA RAM
     endereco_in_ram <= bancreg_out(6 downto 0);
     ram_in <= acc_out;
-    
-
 
     --FLAGS
     flag_carry_in <= flag_carry_out;

@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-------------------------------------------------------------------------
+
 entity ram is
    port( 
          clk      : in std_logic;
@@ -11,7 +11,6 @@ entity ram is
          dado_out : out unsigned(15 downto 0) 
    );
 end entity;
-------------------------------------------------------------------------
 architecture a_ram of ram is
    type mem is array (0 to 127) of unsigned(15 downto 0);
    signal conteudo_ram : mem;

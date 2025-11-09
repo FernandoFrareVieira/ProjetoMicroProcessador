@@ -36,6 +36,7 @@ VHDL_SOURCES = \
 	bancoreg.vhd \
 	UC.vhd \
 	topLevel.vhd \
+	ram.vhd \
 	$(TESTBENCH).vhd
 
 # Regra padrão: Compila, elabora, executa e visualiza
