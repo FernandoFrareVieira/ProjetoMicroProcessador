@@ -56,15 +56,18 @@ architecture a_topLevel of topLevel is
             reg_instr_wr_en       : out std_logic;
             jump_en               : out std_logic;
             banco_wr_en           : out std_logic;
+            ram_wr_en             : out std_logic;
             acc_wr_en             : out std_logic;
             estado_atual          : out UNSIGNED(1 downto 0);
             instr_ld_rn_const_en  : out std_logic;
             instr_mov_rn_acc_en   : out std_logic;
             instr_mov_acc_rn_en   : out std_logic;
             instr_ld_acc_const_en : out std_logic;
-            instr_op_en           : out std_logic;
+            instr_ula_en          : out std_logic;
             instr_b_en            : out std_logic;
             instr_cmpi_en         : out std_logic;
+            instr_lw_en           : out std_logic;
+            instr_sw_en           : out std_logic;
             select_op             : out unsigned(1 downto 0);
             const                 : out unsigned(6 downto 0)    
         );
@@ -86,14 +89,15 @@ architecture a_topLevel of topLevel is
     -- Componente: ULA
     component ULA is
         port(
-            A        : in unsigned(15 downto 0);
-            B        : in unsigned(15 downto 0);
-            sel_op   : in unsigned(1 downto 0);
-            saida    : out unsigned(15 downto 0);
-            carry    : out std_logic;
-            overflow : out std_logic;
-            zero     : out std_logic;
-            negative : out std_logic
+            A         : in unsigned(15 downto 0);
+            B         : in unsigned(15 downto 0);
+            sel_op    : in unsigned(1 downto 0);
+            instr_cmpi: in std_logic;
+            saida     : out unsigned(15 downto 0);
+            carry     : out std_logic;
+            overflow  : out std_logic;
+            zero      : out std_logic;
+            negative  : out std_logic
         );
     end component;
 
@@ -134,6 +138,16 @@ architecture a_topLevel of topLevel is
         );
     end component;
 
+    component ram is 
+        port( 
+         clk      : in std_logic;
+         endereco : in unsigned(6 downto 0);
+         wr_en    : in std_logic;
+         dado_in  : in unsigned(15 downto 0);
+         dado_out : out unsigned(15 downto 0) 
+        );
+    end component;
+
     -- Sinais internos
     signal pc_out         : unsigned(6 downto 0);
     signal pc_in          : unsigned(6 downto 0);
@@ -149,16 +163,19 @@ architecture a_topLevel of topLevel is
     signal uc_const                  : unsigned(6 downto 0);
     signal uc_reg_instr_wr_en        : std_logic;
     signal uc_banco_wr_en            : std_logic;
+    signal uc_ram_wr_en              : std_logic;
     signal uc_acc_wr_en              : std_logic;
     signal uc_estado_atual           : unsigned(1 downto 0);
     signal uc_instr_ld_rn_const_en   : std_logic;
     signal uc_instr_mov_rn_acc_en    : std_logic;
     signal uc_instr_mov_acc_rn_en    : std_logic;
     signal uc_instr_ld_acc_const_en  : std_logic;
-    signal uc_instr_op_en            : std_logic;
+    signal uc_instr_ula_en           : std_logic;
     signal uc_select_op              : unsigned(1 downto 0);
     signal uc_instr_cmpi_en          : std_logic;
     signal uc_instr_b_en             : std_logic;
+    signal uc_instr_lw_en            : std_logic;
+    signal uc_instr_sw_en            : std_logic;
     
     signal bancreg_data   : unsigned(15 downto 0);
     signal bancreg_wr_en  : std_logic;
@@ -191,6 +208,11 @@ architecture a_topLevel of topLevel is
    
     --Sinal do somador de endereço relativo
     signal endereco_rel_out : unsigned(6 downto 0);
+
+    --Sinal da ram
+    signal endereco_in_ram: unsigned(6 downto 0);
+    signal ram_in : unsigned(15 downto 0);
+    signal ram_out : unsigned(15 downto 0);
 
 begin
 
@@ -236,16 +258,19 @@ begin
             reg_instr_wr_en       => uc_reg_instr_wr_en,
             jump_en               => uc_jump_en,
             banco_wr_en           => uc_banco_wr_en,
+            ram_wr_en             => uc_ram_wr_en,
             acc_wr_en             => uc_acc_wr_en,
             estado_atual          => uc_estado_atual,
             instr_ld_rn_const_en  => uc_instr_ld_rn_const_en,
             instr_mov_rn_acc_en   => uc_instr_mov_rn_acc_en,
             instr_mov_acc_rn_en   => uc_instr_mov_acc_rn_en,
             instr_ld_acc_const_en => uc_instr_ld_acc_const_en,
-            instr_op_en           => uc_instr_op_en,
+            instr_ula_en          => uc_instr_ula_en,
             select_op             => uc_select_op,
             instr_b_en            => uc_instr_b_en,
             instr_cmpi_en         => uc_instr_cmpi_en,
+            instr_lw_en           => uc_instr_lw_en,
+            instr_sw_en           => uc_instr_sw_en,
             const                 => uc_const
         );
 
@@ -264,14 +289,15 @@ begin
     -- Instância da ULA
     ula_inst: ULA
         port map(
-            A        => ula_a_in,
-            B        => ula_b,
-            sel_op   => ula_sel,
-            saida    => ula_out,
-            carry    => flag_carry_out,    
-            overflow => flag_overflow_out, 
-            zero     => flag_zero_out,      
-            negative => flag_negative_out
+            A         => ula_a_in,
+            B         => ula_b,
+            sel_op    => ula_sel,
+            instr_cmpi => uc_instr_cmpi_en,
+            saida     => ula_out,
+            carry     => flag_carry_out,    
+            overflow  => flag_overflow_out, 
+            zero      => flag_zero_out,      
+            negative  => flag_negative_out
         );
 
     -- Instância dos Acumuladores
@@ -306,13 +332,33 @@ begin
             deslocamento   => instr_reg_out(17 downto 11),
             endereco_rel   => endereco_rel_out
         );
+
+    ram_inst: ram
+        port map (
+            clk   => clk,
+            endereco => endereco_in_ram,
+            wr_en => uc_ram_wr_en,
+            dado_in => ram_in,
+            dado_out => ram_out
+        );
     
 
     --MUXES
-    pc_in <= instr_reg_out(11 downto 5) when uc_jump_en = '1' and uc_estado_atual = "11" else endereco_rel_out when uc_instr_b_en = '1' and uc_estado_atual = "11" else soma1_out; -- mux que controla se é jump ou branch ou pc+1
-    bancreg_data <= const_ext when uc_instr_ld_rn_const_en = '1' and uc_instr_mov_rn_acc_en = '0' else acc_out; --mux que controla se é LD no banco ou MOV de um registrador
-    acc_data_wr <= const_ext when uc_instr_ld_acc_const_en = '1' else ula_out when uc_instr_op_en = '1' else bancreg_out when uc_instr_mov_acc_rn_en = '1' else (others=>'0'); --mux que controla o que vai pro acc;
-    ula_a <= const_ext when uc_instr_cmpi_en='1' else bancreg_out; -- mux que controla se é cmpi ou não
+    pc_in <= instr_reg_out(11 downto 5) when uc_jump_en = '1' and uc_estado_atual = "11" 
+    else endereco_rel_out when uc_instr_b_en = '1' and uc_estado_atual = "11" 
+    else soma1_out; -- mux que controla se é jump ou branch ou pc+1
+    
+    bancreg_data <= const_ext when uc_instr_ld_rn_const_en = '1' and uc_instr_mov_rn_acc_en = '0' 
+    else acc_out; --mux que controla se é LD no banco ou MOV de um registrador
+    
+    acc_data_wr <= const_ext when uc_instr_ld_acc_const_en = '1' 
+    else ula_out when uc_instr_ula_en = '1' 
+    else bancreg_out when uc_instr_mov_acc_rn_en = '1'
+    else ram_out when uc_instr_lw_en = '1' 
+    else (others=>'0'); --mux que controla o que vai pro acc;
+    
+    ula_a <= const_ext when uc_instr_cmpi_en='1' 
+    else bancreg_out; -- mux que controla se é cmpi ou não
     --ULA
     ula_b <= acc_out; 
     ula_a_in <= ula_a;
@@ -326,6 +372,12 @@ begin
     --ENTRADAS DO ACUMULADOR
     acc_sel <= instr_reg_out(5);
     acc_wr_en <= uc_acc_wr_en;
+
+    --ENTRADAS DA RAM
+    endereco_in_ram <= bancreg_out(6 downto 0);
+    ram_in <= acc_out;
+    
+
 
     --FLAGS
     flag_carry_in <= flag_carry_out;

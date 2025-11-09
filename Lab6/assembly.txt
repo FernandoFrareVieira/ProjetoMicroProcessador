@@ -1,33 +1,29 @@
--- Passo A:
-LD R3, 5
-
--- Passo B: 
-LD R4, 8
-
--- Passo C:
-MOV A, R3     
-ADD A, R4
-MOV R5, A
-
--- Passo D 
-PASSO_D:
-LD A, 1       
-SUB A, R5
-MOV R5, A
-
--- Passo E; Pula para o passo G (endereço 20)
-JUMP 20     
-
--- Passo F (nunca será eexecutado)
-LD R5, 0
-
--- Passo G
-LD B, 0
-ADD B, R5
-MOV R3, B
-
--- Passo H; Pula para o passo C (endereço 2)
-JUMP 2      
-
--- Passo I (nunca será executado)
+-- Passo A: Carrega R3 (contador i) com 0
 LD R3, 0
+
+-- Passo B: Carrega R4 (soma) com 0
+LD R4, 0
+
+-- Carrega R1 com 1, para ser usado no incremento
+LD R1, 1
+
+-- Início do Loop 
+LOOP_START
+-- Passo C: R4 <- R4 + R3
+MOV A, R4       -- A = R4 (soma)
+ADD A, R3       -- A = A + R3 (soma + i)
+MOV R4, A       -- R4 = A (soma = soma + i)
+
+-- Passo D: Soma 1 em R3
+MOV A, R3       -- A = R3 
+ADD A, R1       -- A = A + R1 
+MOV R3, A       -- R3 = A
+
+-- Passo E: Se R3 < 30, salta para C (LOOP_START)
+MOV A, R3       -- A = R3
+CMPI A, 30      -- Compara A (R3) com 30. 
+BHI LOOP_START  -- Branch if Higher (30 > A). Salto relativo -8.
+
+-- Passo F: Copia valor de R4 para R5
+MOV A, R4       -- A = R4 
+MOV R5, A       -- R5 = A 
