@@ -1,21 +1,39 @@
-```
-| Endereço | Assembly     | Comentário                       |
-| -------- | ------------ | -------------------------------- |
-| 0        | LD R0, 5     | (R0 = ponteiro 5)                |
-| 1        | LD ACC, 23   | (ACC = 23)                       |
-| 2        | SW [R0], ACC | (RAM[5] <- 23)                   |
-| 3        | LD R1, 30    | (R1 = ponteiro 30)               |
-| 4        | LD ACC, 42   | (ACC = 42)                       |
-| 5        | SW [R1], ACC | (RAM[30] <- 42)                  |
-| 6        | LD R2, 10    | (R2 = ponteiro 10)               |
-| 7        | LD ACC, 19   | (ACC = 19)                       |
-| 8        | SW [R2], ACC | (RAM[10] <- 19)                  |
-| 9        | NOP          | (Pausa)                          |
-| 10       | NOP          | (Pausa)                          |
-| 11       | LW ACC, [R1] | (ACC <- RAM[30])                 |
-| 12       | MOV R3, ACC  | (R3 <- 42)                       |
-| 13       | LW ACC, [R2] | (ACC <- RAM[10])                 |
-| 14       | MOV R4, ACC  | (R4 <- 19)                       |
-| 15       | LW ACC, [R0] | (ACC <- RAM[5])                  |
-| 16       | MOV R5, ACC  | (R5 <- 23)                       |
-| 17       | JUMP 17      | (Loop infinito)                  |
+| Endereço | Assembly     | Comentário                               |
+| -------- | ------------ | ---------------------------------------- |
+| 0        | LD R0, 10    | (R0 = Ponteiro de Escrita, inicia em 10) |
+| 1        | LD R1, 16    | (R1 = Gerador de Dados, inicia em 16)    |
+| 2        | LD R2, 4     | (R2 = Contador Loop de Escrita, 4 voltas)|
+| 3        | LD R3, 5     | (R3 = Constante +5)                      |
+| 4        | LD R4, 3     | (R4 = Constante +3)                      |
+| 5        | LD R5, 127   | (R5 = Constante -1)                      |
+| 6        | LD R6, 10    | (R6 = Ponteiro de Leitura, inicia em 10) |
+| 7        | LD R7, 4     | (R7 = Contador Loop de Leitura, 4 voltas)|
+|          |              |                                          |
+| 8        | MOV ACC, R1  | **(Início Loop 1: Escrever dado)**       |
+| 9        | SW [R0], ACC | (RAM[R0] <- R1)                          |
+| 10       | MOV ACC, R0  | (ACC = R0)                               |
+| 11       | ADD ACC, R3  | (ACC = R0 + 5)                           |
+| 12       | MOV R0, ACC  | (R0 = ACC, atualiza ponteiro)            |
+| 13       | MOV ACC, R1  | (ACC = R1)                               |
+| 14       | ADD ACC, R4  | (ACC = R1 + 3)                           |
+| 15       | MOV R1, ACC  | (R1 = ACC, atualiza dado)                |
+| 16       | MOV ACC, R2  | (ACC = R2)                               |
+| 17       | ADD ACC, R5  | (ACC = R2 - 1)                           |
+| 18       | MOV R2, ACC  | (R2 = ACC, decrementa contador)          |
+| 19       | CMPI ACC, 0  | (Compara ACC (R2) com 0)                 |
+| 20       | BHI -12      | (Se R2 > 0, pula p/ endereço 8)          |
+|          |              |                                          |
+| 21       | NOP          | (Pausa)                                  |
+| 22       | NOP          | (Pausa)                                  |
+| 23       | NOP          | (Pausa)                                  |
+|          |              |                                          |
+| 24       | LW ACC, [R6] | **(Início Loop 2: Ler dado)**            |
+| 25       | MOV ACC, R6  | (ACC = R6)                               |
+| 26       | ADD ACC, R3  | (ACC = R6 + 5)                           |
+| 27       | MOV R6, ACC  | (R6 = ACC, atualiza ponteiro)            |
+| 28       | MOV ACC, R7  | (ACC = R7)                               |
+| 29       | ADD ACC, R5  | (ACC = R7 - 1)                           |
+| 30       | MOV R7, ACC  | (R7 = ACC, decrementa contador)          |
+| 31       | CMPI ACC, 0  | (Compara ACC (R7) com 0)                 |
+| 32       | BHI -8       | (Se R7 > 0, pula p/ endereço 24)         |
+|          |              |                                          |
