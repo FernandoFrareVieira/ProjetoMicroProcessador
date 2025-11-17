@@ -1,0 +1,654 @@
+================================================================================
+                    RELATÓRIO DE INSTRUÇÕES DE MEMÓRIA
+                        MICROPROCESSADOR - LAB 7
+================================================================================
+
+Data: 12/11/2025
+Autor: Fernando Frare Vieira
+
+================================================================================
+                            ÍNDICE
+================================================================================
+
+1. VISÃO GERAL DO PROCESSADOR
+2. INSTRUÇÕES DE MEMÓRIA IMPLEMENTADAS
+   2.1. LW (Load Word)
+   2.2. SW (Store Word)
+3. CONJUNTO COMPLETO DE INSTRUÇÕES
+4. FORMATO DAS INSTRUÇÕES
+5. ARQUITETURA DO PROCESSADOR
+6. MÁQUINA DE ESTADOS
+7. EXEMPLOS DE USO
+
+================================================================================
+1. VISÃO GERAL DO PROCESSADOR
+================================================================================
+
+Processador de 16 bits com arquitetura baseada em acumuladores.
+
+CARACTERÍSTICAS:
+- Palavra de dados: 16 bits
+- Palavra de instrução: 18 bits
+- Banco de registradores: 8 registradores de 16 bits (R0-R7)
+- Acumuladores: 2 acumuladores de 16 bits (ACC_A, ACC_B)
+- Program Counter: 7 bits (128 endereços)
+- Memória ROM: 128 palavras de 18 bits
+- Memória RAM: 128 palavras de 16 bits
+- ULA: 4 operações (ADD, SUB, NAND, XOR)
+- Máquina de estados: 4 estados (00, 01, 10, 11)
+
+REGISTRADORES DE FLAGS:
+- Carry (C): Transporte em operações aritméticas
+- Overflow (V): Estouro em operações com sinal
+- Zero (Z): Resultado zero
+- Negative (N): Resultado negativo (bit de sinal)
+
+================================================================================
+2. INSTRUÇÕES DE MEMÓRIA IMPLEMENTADAS
+================================================================================
+
+O processador implementa 2 instruções de acesso à memória RAM:
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│                          2.1. LW (Load Word)                             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+NOME: LW (Load Word - Carregar Palavra)
+
+DESCRIÇÃO:
+    Carrega uma palavra de 16 bits da memória RAM para o acumulador.
+    O endereço de memória é fornecido por um registrador do banco.
+
+SINTAXE:
+    LW ACC, [Rn]
+
+OPERAÇÃO:
+    ACC ← Memória[Rn]
+
+CODIFICAÇÃO BINÁRIA:
+    ┌─────────┬───────┬───────┬────┬────────┐
+    │  Const  │  Rd   │  Rn   │ A  │ OpCode │
+    │ (17-11) │ (10-8)│ (7-5) │(5) │ (4-0)  │
+    ├─────────┼───────┼───────┼────┼────────┤
+    │ 0000000 │  000  │  Rn   │ A  │ 10_001 │
+    └─────────┴───────┴───────┴────┴────────┘
+    
+    Opcode: 001 (binário)
+    Function: 10 (binário)
+    Formato completo: 0000000_000_RRR_A_10_001
+    
+    Onde:
+    - RRR: Endereço do registrador fonte (000-111 = R0-R7)
+    - A: Seletor de acumulador (0 = ACC_A, 1 = ACC_B)
+
+OPERANDOS:
+    - ACC: Acumulador destino (ACC_A ou ACC_B)
+    - [Rn]: Endereço indireto via registrador (R0-R7)
+
+EFEITOS:
+    - Acumulador selecionado recebe o valor da memória
+    - Nenhuma flag é alterada
+    - Endereço de memória = conteúdo de Rn (7 bits menos significativos)
+
+TEMPORIZAÇÃO (Ciclos de Clock):
+    Estado 00: Busca instrução da ROM
+    Estado 01: Decodifica instrução
+    Estado 10: Lê RAM[Rn] e escreve no acumulador
+    Estado 11: Incrementa PC
+
+    Total: 4 ciclos de clock
+
+SINAIS DE CONTROLE ATIVADOS:
+    - instr_lw_en = '1'
+    - acc_wr_en = '1' (no estado 10)
+    - Mux acc_data_wr seleciona ram_out
+
+FLUXO DE DADOS:
+    1. Registrador Rn fornece endereço (7 bits LSB)
+    2. RAM lê endereço e retorna dado (16 bits)
+    3. Dado da RAM vai para o acumulador selecionado
+
+EXEMPLO DE USO:
+    Código Assembly:
+        LD R1, 25          ; R1 = 25 (endereço de memória)
+        LW ACC_A, [R1]     ; ACC_A = RAM[25]
+    
+    Código Binário:
+        0011001_000_001_01_001  ; LD R1, 25
+        0000000_000_001_0_10_001 ; LW ACC_A, [R1]
+    
+    Resultado:
+        Se RAM[25] contém 0x1234, então ACC_A = 0x1234
+
+RESTRIÇÕES:
+    - Endereço válido: 0 a 127 (7 bits)
+    - Registrador Rn deve conter endereço válido
+    - Apenas 7 bits LSB de Rn são usados como endereço
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│                          2.2. SW (Store Word)                            │
+└──────────────────────────────────────────────────────────────────────────┘
+
+NOME: SW (Store Word - Armazenar Palavra)
+
+DESCRIÇÃO:
+    Armazena o conteúdo do acumulador na memória RAM.
+    O endereço de memória é fornecido por um registrador do banco.
+
+SINTAXE:
+    SW [Rn], ACC
+
+OPERAÇÃO:
+    Memória[Rn] ← ACC
+
+CODIFICAÇÃO BINÁRIA:
+    ┌─────────┬───────┬───────┬────┬────────┐
+    │  Const  │  Rd   │  Rn   │ A  │ OpCode │
+    │ (17-11) │ (10-8)│ (7-5) │(5) │ (4-0)  │
+    ├─────────┼───────┼───────┼────┼────────┤
+    │ 0000000 │  000  │  Rn   │ A  │ 11_001 │
+    └─────────┴───────┴───────┴────┴────────┘
+    
+    Opcode: 001 (binário)
+    Function: 11 (binário)
+    Formato completo: 0000000_000_RRR_A_11_001
+    
+    Onde:
+    - RRR: Endereço do registrador com endereço (000-111 = R0-R7)
+    - A: Seletor de acumulador (0 = ACC_A, 1 = ACC_B)
+
+OPERANDOS:
+    - [Rn]: Endereço indireto via registrador (R0-R7)
+    - ACC: Acumulador fonte (ACC_A ou ACC_B)
+
+EFEITOS:
+    - Memória no endereço Rn recebe valor do acumulador
+    - Nenhuma flag é alterada
+    - Acumulador permanece inalterado
+    - Endereço de memória = conteúdo de Rn (7 bits menos significativos)
+
+TEMPORIZAÇÃO (Ciclos de Clock):
+    Estado 00: Busca instrução da ROM
+    Estado 01: Decodifica instrução
+    Estado 10: Escreve ACC na RAM[Rn]
+    Estado 11: Incrementa PC
+
+    Total: 4 ciclos de clock
+
+SINAIS DE CONTROLE ATIVADOS:
+    - instr_sw = '1'
+    - ram_wr_en = '1' (no estado 10)
+    - Endereço RAM = bancreg_out(6 downto 0)
+    - Dado para RAM = acc_out
+
+FLUXO DE DADOS:
+    1. Registrador Rn fornece endereço (7 bits LSB)
+    2. Acumulador fornece dado (16 bits)
+    3. RAM escreve dado no endereço especificado
+
+EXEMPLO DE USO:
+    Código Assembly:
+        LD ACC_A, 100      ; ACC_A = 100
+        LD R2, 30          ; R2 = 30 (endereço de memória)
+        SW [R2], ACC_A     ; RAM[30] = 100
+    
+    Código Binário:
+        0001100100_000_0_00_001  ; LD ACC_A, 100
+        0011110_000_010_01_001   ; LD R2, 30
+        0000000_000_010_0_11_001 ; SW [R2], ACC_A
+    
+    Resultado:
+        RAM[30] = 0x0064 (100 em decimal)
+
+RESTRIÇÕES:
+    - Endereço válido: 0 a 127 (7 bits)
+    - Registrador Rn deve conter endereço válido
+    - Apenas 7 bits LSB de Rn são usados como endereço
+
+================================================================================
+3. CONJUNTO COMPLETO DE INSTRUÇÕES
+================================================================================
+
+O processador implementa 15 instruções divididas em 6 categorias:
+
+┌────────────────────────────────────────────────────────────────────────┐
+│ CATEGORIA          │ INSTRUÇÃO │ OPCODE │ FUNC │ DESCRIÇÃO           │
+├────────────────────┼───────────┼────────┼──────┼─────────────────────┤
+│ CONTROLE           │ NOP       │  000   │  00  │ Nenhuma operação    │
+│                    │ JUMP      │  111   │  00  │ Salto absoluto      │
+├────────────────────┼───────────┼────────┼──────┼─────────────────────┤
+│ CARGA DE DADOS     │ LD ACC, # │  001   │  00  │ Carrega constante   │
+│                    │ LD Rn, #  │  001   │  01  │ Carrega em Rn       │
+├────────────────────┼───────────┼────────┼──────┼─────────────────────┤
+│ MOVIMENTAÇÃO       │ MOV ACC,Rn│  010   │  00  │ Move Rn para ACC    │
+│                    │ MOV Rn,ACC│  010   │  01  │ Move ACC para Rn    │
+├────────────────────┼───────────┼────────┼──────┼─────────────────────┤
+│ ULA (ARITMÉTICA    │ ADD       │  011   │  00  │ Soma                │
+│  E LÓGICA)         │ SUB       │  011   │  01  │ Subtração           │
+│                    │ NAND      │  011   │  10  │ NAND lógico         │
+│                    │ XOR       │  011   │  11  │ XOR lógico          │
+├────────────────────┼───────────┼────────┼──────┼─────────────────────┤
+│ COMPARAÇÃO         │ CMPI      │  100   │  01  │ Compara imediato    │
+├────────────────────┼───────────┼────────┼──────┼─────────────────────┤
+│ DESVIO CONDICIONAL │ BVC       │  101   │  00  │ Desvia se V=0       │
+│                    │ BHI       │  101   │  01  │ Desvia se maior     │
+├────────────────────┼───────────┼────────┼──────┼─────────────────────┤
+│ MEMÓRIA (RAM)      │ LW        │  001   │  10  │ Lê da memória       │
+│                    │ SW        │  001   │  11  │ Escreve na memória  │
+└────────────────────┴───────────┴────────┴──────┴─────────────────────┘
+
+NOTAS:
+- Todas as operações ULA atualizam as flags (C, V, Z, N)
+- CMPI também atualiza as flags
+- Instruções de memória NÃO alteram flags
+- Desvios condicionais verificam flags
+
+================================================================================
+4. FORMATO DAS INSTRUÇÕES
+================================================================================
+
+FORMATO GERAL (18 bits):
+┌─────────┬─────────┬─────────┬─────┬─────┬─────────┐
+│  Const  │   Rd    │   Rn    │  A  │Func │ OpCode  │
+│ (17-11) │ (10-8)  │  (7-5)  │ (5) │(4-3)│  (2-0)  │
+│ 7 bits  │ 3 bits  │ 3 bits  │1 bit│2 bit│ 3 bits  │
+└─────────┴─────────┴─────────┴─────┴─────┴─────────┘
+
+CAMPOS:
+- Const (7 bits): Constante em complemento de 2 ou endereço de salto
+- Rd (3 bits): Registrador destino (000-111 = R0-R7)
+- Rn (3 bits): Registrador fonte (000-111 = R0-R7)
+- A (1 bit): Seletor de acumulador (0 = ACC_A, 1 = ACC_B)
+- Func (2 bits): Campo de função (diferencia variantes)
+- OpCode (3 bits): Código de operação principal
+
+EXEMPLOS DE CODIFICAÇÃO:
+
+1. LW ACC_A, [R3]:
+   0000000_000_011_0_10_001
+   └─┬───┘ └┬┘ └┬┘ │ └┬┘└┬┘
+     │      │   │  │  │  └── Opcode: 001 (categoria memória)
+     │      │   │  │  └───── Func: 10 (LW)
+     │      │   │  └──────── A: 0 (ACC_A)
+     │      │   └─────────── Rn: 011 (R3 - endereço)
+     │      └─────────────── Rd: 000 (não usado)
+     └────────────────────── Const: 0000000 (não usado)
+
+2. SW [R5], ACC_B:
+   0000000_000_101_1_11_001
+   └─┬───┘ └┬┘ └┬┘ │ └┬┘└┬┘
+     │      │   │  │  │  └── Opcode: 001 (categoria memória)
+     │      │   │  │  └───── Func: 11 (SW)
+     │      │   │  └──────── A: 1 (ACC_B)
+     │      │   └─────────── Rn: 101 (R5 - endereço)
+     │      └─────────────── Rd: 000 (não usado)
+     └────────────────────── Const: 0000000 (não usado)
+
+3. ADD ACC_A, R2:
+   0000000_000_010_0_00_011
+   (Soma ACC_A com R2, resultado em ACC_A)
+
+4. LD R7, 42:
+   0101010_000_111_01_001
+   (Carrega 42 em R7)
+
+================================================================================
+5. ARQUITETURA DO PROCESSADOR
+================================================================================
+
+COMPONENTES PRINCIPAIS:
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        DIAGRAMA DE BLOCOS                                │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  ┌──────┐    ┌─────────┐    ┌──────────────────┐                      │
+│  │  PC  │───▶│   ROM   │───▶│ Reg. Instrução   │                      │
+│  └──────┘    └─────────┘    └──────────────────┘                      │
+│     ▲                                 │                                 │
+│     │                                 ▼                                 │
+│     │                        ┌─────────────────┐                       │
+│     └────────────────────────│  Unidade de     │                       │
+│                              │  Controle (UC)  │                       │
+│                              └─────────────────┘                       │
+│                                       │                                 │
+│                    ┌──────────────────┼──────────────────┐            │
+│                    ▼                  ▼                  ▼            │
+│          ┌─────────────────┐  ┌────────────┐  ┌────────────────┐    │
+│          │ Banco de Reg.   │  │    ULA     │  │  Acumuladores  │    │
+│          │   (R0 - R7)     │  │ (4 ops)    │  │  (ACC_A/ACC_B) │    │
+│          └─────────────────┘  └────────────┘  └────────────────┘    │
+│                    │                  │                  │            │
+│                    └──────────────────┼──────────────────┘            │
+│                                       ▼                                 │
+│                              ┌─────────────────┐                       │
+│                              │      RAM        │                       │
+│                              │   (128x16)      │                       │
+│                              └─────────────────┘                       │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+
+DESCRIÇÃO DOS COMPONENTES:
+
+1. PC (Program Counter) - 7 bits
+   - Armazena endereço da próxima instrução
+   - Incrementado automaticamente ou atualizado por saltos
+
+2. ROM (Read-Only Memory) - 128 x 18 bits
+   - Armazena programa
+   - Acesso em 1 ciclo de clock
+
+3. Registrador de Instrução - 18 bits
+   - Armazena instrução atual durante execução
+   - Atualizado no estado 00
+
+4. Unidade de Controle (UC)
+   - Decodifica instruções
+   - Gera sinais de controle
+   - Gerencia máquina de estados
+   - Controla flags (C, V, Z, N)
+
+5. Banco de Registradores - 8 x 16 bits
+   - R0 a R7
+   - 1 porta de escrita, 1 porta de leitura
+
+6. ULA (Unidade Lógica e Aritmética)
+   - Operações: ADD, SUB, NAND, XOR
+   - Gera flags: Carry, Overflow, Zero, Negative
+   - Operandos: 16 bits
+
+7. Acumuladores - 2 x 16 bits
+   - ACC_A e ACC_B
+   - Armazenam resultados de operações
+   - Fonte/destino de operações ULA
+
+8. RAM (Random Access Memory) - 128 x 16 bits
+   - Memória de dados
+   - Acesso via endereçamento indireto
+   - 1 ciclo de clock para leitura/escrita
+
+INTERCONEXÃO PARA INSTRUÇÕES DE MEMÓRIA:
+
+LW (Load Word):
+┌─────────┐     ┌─────────┐     ┌─────────┐
+│Banco Reg│────▶│  RAM    │────▶│  ACC    │
+│  (Rn)   │     │(endereço│     │         │
+└─────────┘     │  dados) │     └─────────┘
+    (7 bits)    └─────────┘       (16 bits)
+
+SW (Store Word):
+┌─────────┐     ┌─────────┐
+│  ACC    │────▶│  RAM    │
+│         │     │(endereço│
+└─────────┘     │  dados) │
+    (16 bits)   └─────────┘
+                    ▲
+┌─────────┐         │
+│Banco Reg│─────────┘
+│  (Rn)   │  (7 bits)
+└─────────┘
+
+================================================================================
+6. MÁQUINA DE ESTADOS
+================================================================================
+
+ESTADOS DA MÁQUINA:
+
+┌────────┬─────────────────┬──────────────────────────────────────────────┐
+│ Estado │ Nome            │ Ação                                         │
+├────────┼─────────────────┼──────────────────────────────────────────────┤
+│   00   │ FETCH           │ Busca instrução da ROM[PC]                   │
+│        │                 │ reg_instr_wr_en = '1'                        │
+├────────┼─────────────────┼──────────────────────────────────────────────┤
+│   01   │ DECODE          │ Decodifica instrução                         │
+│        │                 │ UC identifica tipo de instrução              │
+├────────┼─────────────────┼──────────────────────────────────────────────┤
+│   10   │ EXECUTE         │ Executa instrução                            │
+│        │                 │ Escrita em registradores (se necessário)     │
+│        │                 │ Atualização de flags (se necessário)         │
+│        │                 │ Acesso à RAM (LW/SW)                         │
+├────────┼─────────────────┼──────────────────────────────────────────────┤
+│   11   │ WRITE-BACK/PC   │ Atualiza PC                                  │
+│        │                 │ PC = PC + 1 (normal)                         │
+│        │                 │ PC = endereço (JUMP/BRANCH)                  │
+└────────┴─────────────────┴──────────────────────────────────────────────┘
+
+DIAGRAMA DE TRANSIÇÃO DE ESTADOS:
+
+        ┌────────────────────────────────────────┐
+        │                                        │
+        ▼                                        │
+    ┌──────┐    ┌──────┐    ┌──────┐    ┌──────┤
+    │  00  │───▶│  01  │───▶│  10  │───▶│  11  │
+    │FETCH │    │DECODE│    │EXEC  │    │WBACK │
+    └──────┘    └──────┘    └──────┘    └──────┘
+        ▲                                        │
+        └────────────────────────────────────────┘
+                    (sempre retorna)
+
+CONTROLE PARA INSTRUÇÕES DE MEMÓRIA:
+
+Estado 00 (FETCH):
+    - PC aponta para instrução
+    - ROM fornece instrução
+    - Registrador de instrução armazena
+
+Estado 01 (DECODE):
+    - UC identifica LW ou SW
+    - Prepara sinais de controle
+
+Estado 10 (EXECUTE):
+    Para LW:
+        - Banco Reg fornece endereço (Rn)
+        - RAM lê dado
+        - ACC recebe dado (acc_wr_en = '1')
+    
+    Para SW:
+        - Banco Reg fornece endereço (Rn)
+        - ACC fornece dado
+        - RAM escreve dado (ram_wr_en = '1')
+
+Estado 11 (WRITE-BACK):
+    - PC = PC + 1
+    - Retorna para estado 00
+
+SINAIS DE CONTROLE - INSTRUÇÕES DE MEMÓRIA:
+
+LW (Estado 10):
+    - instr_lw_en = '1'
+    - acc_wr_en = '1'
+    - ram_wr_en = '0'
+    - Mux acc_data_wr seleciona ram_out
+
+SW (Estado 10):
+    - instr_sw = '1'
+    - ram_wr_en = '1'
+    - acc_wr_en = '0'
+    - endereco_in_ram = bancreg_out(6 downto 0)
+    - ram_in = acc_out
+
+================================================================================
+7. EXEMPLOS DE USO
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│                    EXEMPLO 1: ESCRITA NA RAM                             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+OBJETIVO: Escrever o valor 42 na posição 10 da memória
+
+Código Assembly:
+    LD ACC_A, 42        ; Carrega 42 no acumulador A
+    LD R0, 10           ; Carrega endereço 10 em R0
+    SW [R0], ACC_A      ; Escreve ACC_A na RAM[10]
+
+Código Binário:
+    0101010_000_000_0_00_001  ; LD ACC_A, 42
+    0001010_000_000_01_001    ; LD R0, 10
+    0000000_000_000_0_11_001  ; SW [R0], ACC_A
+
+Resultado:
+    RAM[10] = 0x002A (42 em decimal)
+
+Ciclos de clock: 12 ciclos (4 por instrução)
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│                    EXEMPLO 2: LEITURA DA RAM                             │
+└──────────────────────────────────────────────────────────────────────────┘
+
+OBJETIVO: Ler valor da posição 25 da memória e somar com 100
+
+Código Assembly:
+    LD R1, 25           ; R1 = endereço 25
+    LW ACC_A, [R1]      ; ACC_A = RAM[25]
+    LD R2, 100          ; R2 = 100
+    ADD ACC_A, R2       ; ACC_A = ACC_A + 100
+
+Código Binário:
+    0011001_000_001_01_001    ; LD R1, 25
+    0000000_000_001_0_10_001  ; LW ACC_A, [R1]
+    1100100_000_010_01_001    ; LD R2, 100
+    0000000_000_010_0_00_011  ; ADD ACC_A, R2
+
+Resultado:
+    ACC_A = RAM[25] + 100
+
+Ciclos de clock: 16 ciclos
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│               EXEMPLO 3: CÓPIA DE DADOS NA MEMÓRIA                       │
+└──────────────────────────────────────────────────────────────────────────┘
+
+OBJETIVO: Copiar valor de RAM[5] para RAM[15]
+
+Código Assembly:
+    LD R0, 5            ; R0 = endereço fonte
+    LD R1, 15           ; R1 = endereço destino
+    LW ACC_A, [R0]      ; ACC_A = RAM[5]
+    SW [R1], ACC_A      ; RAM[15] = ACC_A
+
+Código Binário:
+    0000101_000_000_01_001    ; LD R0, 5
+    0001111_000_001_01_001    ; LD R1, 15
+    0000000_000_000_0_10_001  ; LW ACC_A, [R0]
+    0000000_000_001_0_11_001  ; SW [R1], ACC_A
+
+Resultado:
+    RAM[15] = RAM[5]
+
+Ciclos de clock: 16 ciclos
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│               EXEMPLO 4: LOOP DE ESCRITA NA RAM                          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+OBJETIVO: Escrever sequência de valores na RAM (16, 19, 22, 25) em 
+          posições 10, 15, 20, 25
+
+Código Assembly (simplificado):
+    ; Inicialização
+    LD R0, 10           ; R0 = Ponteiro de escrita (inicia em 10)
+    LD R1, 16           ; R1 = Dado inicial (16)
+    LD R2, 4            ; R2 = Contador (4 iterações)
+    LD R3, 5            ; R3 = Incremento de endereço (+5)
+    LD R4, 3            ; R4 = Incremento de dado (+3)
+    LD R5, -1           ; R5 = Decremento contador (-1)
+
+    LOOP:
+    MOV ACC_A, R1       ; ACC_A = R1 (dado)
+    SW [R0], ACC_A      ; RAM[R0] = ACC_A
+    
+    ; Atualiza ponteiro: R0 = R0 + 5
+    MOV ACC_A, R0       
+    ADD ACC_A, R3       
+    MOV R0, ACC_A       
+    
+    ; Atualiza dado: R1 = R1 + 3
+    MOV ACC_A, R1       
+    ADD ACC_A, R4       
+    MOV R1, ACC_A       
+    
+    ; Decrementa contador: R2 = R2 - 1
+    MOV ACC_A, R2       
+    ADD ACC_A, R5       
+    MOV R2, ACC_A       
+    
+    ; Verifica se contador > 0
+    CMPI ACC_A, 0       
+    BHI LOOP            ; Se ACC_A > 0, volta para LOOP
+
+Resultado Final:
+    RAM[10] = 16
+    RAM[15] = 19
+    RAM[20] = 22
+    RAM[25] = 25
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│               EXEMPLO 5: ACESSO COM DOIS ACUMULADORES                    │
+└──────────────────────────────────────────────────────────────────────────┘
+
+OBJETIVO: Somar dois valores da memória e armazenar resultado
+
+Código Assembly:
+    LD R0, 30           ; Endereço do primeiro valor
+    LD R1, 40           ; Endereço do segundo valor
+    LD R2, 50           ; Endereço do resultado
+    
+    LW ACC_A, [R0]      ; ACC_A = RAM[30]
+    LW ACC_B, [R1]      ; ACC_B = RAM[40]
+    
+    MOV ACC_A, ACC_B    ; Não implementado diretamente
+    ; Alternativa: usar registrador intermediário
+    MOV R3, ACC_B       
+    MOV ACC_A, R3
+    ADD ACC_A, ACC_B    ; ACC_A = ACC_A + ACC_B
+    
+    SW [R2], ACC_A      ; RAM[50] = resultado
+
+Resultado:
+    RAM[50] = RAM[30] + RAM[40]
+
+================================================================================
+                            FIM DO RELATÓRIO
+================================================================================
+
+OBSERVAÇÕES FINAIS:
+
+1. ENDEREÇAMENTO:
+   - As instruções LW e SW usam endereçamento indireto via registrador
+   - Apenas os 7 bits menos significativos do registrador são usados
+   - Permite acesso a toda a RAM (128 posições)
+
+2. PERFORMANCE:
+   - Cada acesso à memória consome 4 ciclos de clock
+   - Não há cache ou pipeline implementado
+   - Operações de memória não podem ser sobrepostas
+
+3. LIMITAÇÕES:
+   - Não há acesso direto à memória (sem endereçamento imediato)
+   - Endereço deve sempre estar em um registrador
+   - Apenas um acesso por instrução (não há instruções de múltiplos acessos)
+
+4. EXTENSÕES POSSÍVEIS:
+   - Implementar modos de endereçamento adicionais
+   - Adicionar instruções de bloco (carregar/armazenar múltiplos valores)
+   - Implementar stack pointer para push/pop
+   - Adicionar proteção de memória
+
+5. COMPATIBILIDADE:
+   - As instruções seguem o formato padrão do processador
+   - Integração completa com ULA e banco de registradores
+   - Suporte total da máquina de estados existente
+
+================================================================================
+REFERÊNCIAS:
+
+- UC.vhd: Unidade de Controle (linhas 161-162 para LW/SW)
+- topLevel.vhd: Arquitetura completa do processador
+- ULA.vhd: Unidade Lógica e Aritmética
+- ram.vhd: Implementação da memória RAM
+- assembly.txt: Exemplos de programas
+
+Data de criação: 12/11/2025
+Versão do processador: Lab 7
+================================================================================

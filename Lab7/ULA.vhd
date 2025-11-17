@@ -29,8 +29,8 @@ architecture a_ULA of ULA is
     signal carry_soma, carry_sub : std_logic;
     signal overflow_soma, overflow_sub : std_logic;
     signal resultado : unsigned(15 downto 0);
-    signal operador_esquerdo : unsigned(15 downto 0);
-    signal operador_direito : unsigned(15 downto 0);
+    signal operador_esquerdo : unsigned(15 downto 0); -- Necessário para fazer a comparação corretamente entre Acc e Const
+    signal operador_direito : unsigned(15 downto 0);  -- Necessário para fazer a comparação corretamente entre Acc e Const
 
     begin
 

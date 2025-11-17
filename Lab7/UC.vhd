@@ -29,7 +29,7 @@ entity UC is
         instr_cmpi_en : out std_logic;
         instr_lw_en : out std_logic;
         instr_sw_en : out std_logic;
-        select_op : out unsigned(1 downto 0);
+        select_ula_op : out unsigned(1 downto 0);
         const : out unsigned(6 downto 0)     -- Constante em Complemento de 2 Direto da UC
     );
 end entity;
@@ -51,6 +51,8 @@ architecture a_UC of UC is
     signal instr_ula :  STD_LOGIC;
     signal instr_ula_soma : STD_LOGIC;
     signal instr_ula_sub : STD_LOGIC;
+    signal instr_ula_nand : STD_LOGIC;
+    signal instr_ula_xor : STD_LOGIC;
     signal instr_cmpi : STD_LOGIC;
     signal instr_bvc : STD_LOGIC;
     signal instr_bhi : STD_LOGIC;
@@ -141,36 +143,44 @@ begin
 
     --Indentificando quando quando instrução é feita;
 
-    instr_nop            <= '1' when func = "00" and opcode = "000" else '0';
-    instr_jump           <= '1' when func = "00" and opcode = "111" else '0'; -- Salto absoluto
-    instr_bvc            <= '1' when func = "00" and opcode = "101" else '0'; -- Salto relativo
-    instr_bhi            <= '1' when func = "01" and opcode = "101" else '0'; -- Salto relativo    
-    instr_cmpi           <= '1' when func = "01" and opcode = "100" else '0';
-    instr_ld_acc_const   <= '1' when func = "00" and opcode = "001" else '0';  -- Ld acc <- const (linha 6)
-    instr_ld_rn_const    <= '1' when func = "01" and opcode = "001" else '0';  -- Ld Rn <- const (linha 7, assumindo renomeação para const to acc/Rn)
-    instr_mov_acc_rn     <= '1' when func = "00" and opcode = "010" else '0';  -- Mov A <- Rn (linha 8)
-    instr_mov_rn_acc     <= '1' when func = "01" and opcode = "010" else '0';  -- Mov Rn <- A (linha 9)
-    instr_ula             <= '1' when opcode = "011" else '0'; -- instrução que ativa operações da ULA
-    instr_ula_soma        <= '1' when func = "00" and opcode = "011" else '0';  -- Op soma (add)
-    instr_ula_sub         <= '1' when func = "01" and opcode = "011" else '0';  -- Op subtração
-    instr_lw              <= '1' when func = "10" and opcode = "001" else '0';
-    instr_sw              <= '1' when func = "11" and opcode = "001" else '0';    
+    instr_nop          <= '1' when func = "00" and opcode = "000" else '0';
+    instr_jump         <= '1' when func = "00" and opcode = "111" else '0'; -- Salto absoluto
+    instr_bvc          <= '1' when func = "00" and opcode = "101" else '0'; -- Salto relativo
+    instr_bhi          <= '1' when func = "01" and opcode = "101" else '0'; -- Salto relativo    
+    instr_cmpi         <= '1' when func = "01" and opcode = "100" else '0'; -- Acc - conts
+    instr_ld_acc_const <= '1' when func = "00" and opcode = "001" else '0'; -- Ld acc <- const 
+    instr_ld_rn_const  <= '1' when func = "01" and opcode = "001" else '0'; -- Ld Rn <- const 
+    instr_mov_acc_rn   <= '1' when func = "00" and opcode = "010" else '0'; -- Mov A <- Rn 
+    instr_mov_rn_acc   <= '1' when func = "01" and opcode = "010" else '0'; -- Mov Rn <- A 
+    instr_ula          <= '1' when opcode = "011" else '0'; -- instrução que ativa operações da ULA
+    instr_ula_soma     <= '1' when func = "00" and opcode = "011" else '0'; -- Op soma (add)
+    instr_ula_sub      <= '1' when func = "01" and opcode = "011" else '0'; -- Op subtração
+    instr_ula_nand     <= '1' when func = "10" and opcode = "011" else '0'; -- Op nand
+    instr_ula_xor      <= '1' when func = "11" and opcode = "011" else '0'; -- Op xor
+    instr_lw           <= '1' when func = "10" and opcode = "001" else '0'; -- lw Acc <- dado[Rn]
+    instr_sw           <= '1' when func = "11" and opcode = "001" else '0'; -- sw [Rn] <- Acc 
 
 
   -- Instrução inválida: NOT do OR de todas as válidas
-    instr_invalida <= not(instr_nop or instr_jump or instr_ld_acc_const or instr_ld_rn_const or
-                      instr_mov_acc_rn or instr_mov_rn_acc or instr_ula_soma or instr_ula_sub);
+    instr_invalida <= not(instr_nop or instr_jump or instr_bvc or instr_bhi or 
+                      instr_ld_acc_const or instr_ld_rn_const or
+                      instr_mov_acc_rn or instr_mov_rn_acc or 
+                      instr_ula_soma or instr_ula_sub or instr_ula_nand or instr_ula_xor or
+                      instr_cmpi or instr_lw or instr_sw);
 
     --Instrução se for branch
     instr_branch <= '1' when bhi_en = '1' or bvc_en = '1' else '0';
+
     --Controle de gravação do PC
-    pc_wr_en <= '1' when ((instr_jump = '1' and estado = "11") or (instr_branch = '1' and estado = "11") or 
-                          (estado = "00" )) else '0';
+    pc_wr_en <= '1' when ((instr_jump = '1' and estado = "11") or 
+                          (instr_branch = '1' and estado = "11") or 
+                          (estado = "00")) else '0';
+
     --Controle do registrador de instrução    
     reg_instr_wr_en <= '1' when estado = "00" else '0';
 
     --Controle de instrução jump;
-    jump_en <= instr_jump; -- adiconado a logica do jump aqui ao invés do toplevel
+    jump_en <= instr_jump; 
 
     --Controle de instrução CMPI
     instr_cmpi_en <= instr_cmpi;
@@ -178,6 +188,7 @@ begin
     --Condição de branch
     bvc_en <= '1' when overflow = '0' and instr_bvc = '1' else '0';
     bhi_en <= '1' when carry = '1' and zero = '0' and instr_bhi = '1' else '0';
+
     --Controle de instrução Branch
     instr_b_en <= instr_branch;
 
@@ -186,30 +197,33 @@ begin
     wr_en_overflow <= '1' when (instr_cmpi = '1' or instr_ula = '1') and estado = "10" else '0';
     wr_en_zero     <= '1' when (instr_cmpi = '1' or instr_ula = '1') and estado = "10" else '0';
     wr_en_negative <= '1' when (instr_cmpi = '1' or instr_ula = '1') and estado = "10" else '0';
-    
-    
 
     --Mux do banco
-     instr_ld_rn_const_en <= instr_ld_rn_const;
-     instr_mov_rn_acc_en  <= instr_mov_rn_acc;
+    instr_ld_rn_const_en  <= instr_ld_rn_const;
+    instr_mov_rn_acc_en   <= instr_mov_rn_acc;
 
-     --Mux dos Acumuladores
+    --Mux dos Acumuladores
     instr_ld_acc_const_en <= instr_ld_acc_const;
-    instr_ula_en <= instr_ula;
-    instr_mov_acc_rn_en <= instr_mov_acc_rn;
-    instr_lw_en <= instr_lw;
-
+    instr_ula_en          <= instr_ula;
+    instr_mov_acc_rn_en   <= instr_mov_acc_rn;
+    instr_lw_en           <= instr_lw;
 
     --ESTADOS para ENABLE
-    banco_wr_en <= '1' when (instr_ld_rn_const = '1' or instr_mov_rn_acc ='1') and (estado = "10") else '0';
-    
-    acc_wr_en <= '1' when (instr_ld_acc_const ='1' or instr_mov_acc_rn = '1' or instr_ula = '1' or instr_lw = '1') and (estado = "10") else '0';
-    
+    banco_wr_en <= '1' when (instr_ld_rn_const = '1' or instr_mov_rn_acc = '1') and 
+                            (estado = "10") else '0';
+
+    acc_wr_en <= '1' when (instr_ld_acc_const = '1' or instr_mov_acc_rn = '1' or 
+                           instr_ula = '1' or instr_lw = '1') and 
+                          (estado = "10") else '0';
+
     ram_wr_en <= '1' when instr_sw = '1' and estado = "10" else '0';
     
     --Seleção de operação na ULA
-
-    select_op <= "00" when instr_ula_soma = '1' else "01" when instr_ula_sub = '1' or instr_cmpi = '1' else "00";
+    select_ula_op <= "00" when instr_ula_soma = '1' else
+                     "01" when instr_ula_sub = '1' or instr_cmpi = '1' else
+                     "10" when instr_ula_nand = '1' else
+                     "11" when instr_ula_xor = '1' else
+                     "00";
 
     --Controle de Estado
     estado_atual <= estado;

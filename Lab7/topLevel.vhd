@@ -68,7 +68,7 @@ architecture a_topLevel of topLevel is
             instr_cmpi_en         : out std_logic;
             instr_lw_en           : out std_logic;
             instr_sw_en           : out std_logic;
-            select_op             : out unsigned(1 downto 0);
+            select_ula_op         : out unsigned(1 downto 0);
             const                 : out unsigned(6 downto 0)    
         );
     end component;
@@ -171,7 +171,7 @@ architecture a_topLevel of topLevel is
     signal uc_instr_mov_acc_rn_en    : std_logic;
     signal uc_instr_ld_acc_const_en  : std_logic;
     signal uc_instr_ula_en           : std_logic;
-    signal uc_select_op              : unsigned(1 downto 0);
+    signal uc_select_ula_op          : unsigned(1 downto 0);
     signal uc_instr_cmpi_en          : std_logic;
     signal uc_instr_b_en             : std_logic;
     signal uc_instr_lw_en            : std_logic;
@@ -266,7 +266,7 @@ begin
             instr_mov_acc_rn_en   => uc_instr_mov_acc_rn_en,
             instr_ld_acc_const_en => uc_instr_ld_acc_const_en,
             instr_ula_en          => uc_instr_ula_en,
-            select_op             => uc_select_op,
+            select_ula_op         => uc_select_ula_op,
             instr_b_en            => uc_instr_b_en,
             instr_cmpi_en         => uc_instr_cmpi_en,
             instr_lw_en           => uc_instr_lw_en,
@@ -362,7 +362,7 @@ begin
     --ULA
     ula_b <= acc_out; 
     ula_a_in <= ula_a;
-    ula_sel <= uc_select_op;
+    ula_sel <= uc_select_ula_op;
 
     --ENTRADAS DO BANCO
     bancreg_reg_r1 <= instr_reg_out(8 downto 6);
