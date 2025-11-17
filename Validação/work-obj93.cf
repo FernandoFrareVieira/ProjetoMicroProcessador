@@ -1,0 +1,76 @@
+v 4
+file . "ext_sinal8p16.vhd" "7539246be3990c468605bbc2c9d5177ac85574b7" "20251117202042.222":
+  entity ext_sinal8p16 at 1( 0) + 0 on 2999;
+  architecture a_ext_sinal8p16 of ext_sinal8p16 at 12( 223) + 0 on 3000;
+file . "ULA.vhd" "001d0aa6b235f3d81ae3b7c70289e7c3f36a28e6" "20251117202042.264":
+  entity ula at 2( 62) + 0 on 3003;
+  architecture a_ula of ula at 21( 485) + 0 on 3004;
+file . "somador_endereco_relativo.vhd" "c8f3c42c01d25f5fde80224d0d842b1a4ff40b51" "20251117202042.246":
+  entity somador_endereco_relativo at 1( 0) + 0 on 3001;
+  architecture a_somador_endereco_relativo of somador_endereco_relativo at 13( 296) + 0 on 3002;
+file . "UC.vhd" "1689e760619bae3edb5eaa30eaab85d8e81046b4" "20251117202042.419":
+  entity uc at 1( 0) + 0 on 3017;
+  architecture a_uc of uc at 37( 1351) + 0 on 3018;
+file . "topLevel.vhd" "1a2ad0e203e25f04415c846a0d964897b90db8b1" "20251117202042.443":
+  entity toplevel at 1( 0) + 0 on 3019;
+  architecture a_toplevel of toplevel at 12( 189) + 0 on 3020;
+file . "reg16bits.vhd" "7f83883ae6986509a47eff27817e2cb835861057" "20251117202042.138":
+  entity reg16bits at 1( 0) + 0 on 2991;
+  architecture a_reg16bits of reg16bits at 14( 260) + 0 on 2992;
+file . "topLevelsincronia_tb.vhd" "b4bd934f177fdd076120a11d64a806197b05788a" "20251022130817.632":
+  entity toplevelsincronia_tb at 1( 0) + 0 on 143;
+  architecture a_toplevelsincronia_tb of toplevelsincronia_tb at 8( 121) + 0 on 144;
+file . "topLevelsincronia.vhd" "468dff22c4f293418647fad13c55a6756804875b" "20251022130811.632":
+  entity toplevelsincronia at 1( 0) + 0 on 141;
+  architecture a_toplevelsincronia of toplevelsincronia at 12( 198) + 0 on 142;
+file . "rom.vhd" "4f9c7dae073f933d89b751d3bca07f74cf3e5dfb" "20251117202042.310":
+  entity rom at 1( 0) + 0 on 3007;
+  architecture a_rom of rom at 13( 249) + 0 on 3008;
+file . "bancoreg.vhd" "7e8fe043a5c9569c0063d9e3010394b82f456090" "20251117202042.398":
+  entity bancoreg at 1( 0) + 0 on 3015;
+  architecture a_bancoreg of bancoreg at 19( 411) + 0 on 3016;
+file . "registrador_instr.vhd" "c83f780a098f1385db52adde4a9094918922c30a" "20251117202042.352":
+  entity registrador_instr at 1( 0) + 0 on 3011;
+  architecture a_registrador_instr of registrador_instr at 13( 267) + 0 on 3012;
+file . "reg18bits.vhd" "4438e9327dbbc18a7c64d96d0c1218d9288e3cfe" "20251117202042.160":
+  entity reg18bits at 1( 0) + 0 on 2993;
+  architecture a_reg18bits of reg18bits at 14( 260) + 0 on 2994;
+file . "ext_sinal7p16.vhd" "dfd2b18972390ba8a70ff8ef6142bc796456969e" "20251117021136.217":
+  entity ext_sinal7p16 at 1( 0) + 0 on 2535;
+  architecture a_ext_sinal7p16 of ext_sinal7p16 at 12( 223) + 0 on 2536;
+file . "maq_estados.vhd" "1dc41f9a1ffe4b9cb5990847c1c81ceb6f19c8dd" "20251117202042.182":
+  entity maq_estados at 1( 0) + 0 on 2995;
+  architecture a_maq_estados of maq_estados at 13( 237) + 0 on 2996;
+file . "maq_estado_tb.vhd" "9cf1df794c53a97df906237fdd1ac4e7bc2f0f05" "20251017232611.115":
+  entity maq_estado_tb at 1( 0) + 0 on 13;
+  architecture a_maq_estado_tb of maq_estado_tb at 9( 130) + 0 on 14;
+file . "maq_estados_tb.vhd" "af542f047df4b6fd1ef07660c0da2492d24cd68d" "20251017233333.225":
+  entity maq_estados_tb at 1( 0) + 0 on 17;
+  architecture a_maq_estados_tb of maq_estados_tb at 9( 132) + 0 on 18;
+file . "ext_sinal7p16_tb.vhd" "44b938cedaee21d9b857451640f0e4b64fc4a9b6" "20251018021127.421":
+  entity ext_sinal7p16_tb at 1( 0) + 0 on 41;
+  architecture a_ext_sinal7p16_tb of ext_sinal7p16_tb at 8( 117) + 0 on 42;
+file . "registrador_instr_tb.vhd" "035f1e5cef7ef5cfdfdfa728660514c19ee464cf" "20251018023617.518":
+  entity registrador_instr_tb at 1( 0) + 0 on 55;
+  architecture a_registrador_instr_tb of registrador_instr_tb at 8( 121) + 0 on 56;
+file . "acumuladores.vhd" "2af26b21ae4946d05a9cddd13fc6bcf3ad28414a" "20251117202042.374":
+  entity acumuladores at 1( 0) + 0 on 3013;
+  architecture a_acumuladores of acumuladores at 16( 402) + 0 on 3014;
+file . "PC.vhd" "6fe903f8e7955d62fc20c320ee4d8c5fb5af23ba" "20251117202042.328":
+  entity pc at 1( 0) + 0 on 3009;
+  architecture a_pc of pc at 15( 305) + 0 on 3010;
+file . "somador1_7bits.vhd" "10368918a5907902ecd0ac7e9e1b68c88a26450d" "20251117202042.205":
+  entity somador1_7bits at 1( 0) + 0 on 2997;
+  architecture a_somador1_7bits of somador1_7bits at 12( 226) + 0 on 2998;
+file . "reg07bits.vhd" "897cfa022534271045d4e4bd42e2a2ca51db00c0" "20251117202042.116":
+  entity reg07bits at 1( 0) + 0 on 2989;
+  architecture a_reg07bits of reg07bits at 14( 258) + 0 on 2990;
+file . "processador_tb.vhd" "4d1fc475f9f18f1cc797a3d733d17e3d8c3e4969" "20251117202042.462":
+  entity processador_tb at 1( 0) + 0 on 3021;
+  architecture a_processador_tb of processador_tb at 8( 115) + 0 on 3022;
+file . "reg01bit.vhd" "315879352e0c1c1706fcc9b778e8083ec2c8fb03" "20251117202042.095":
+  entity reg01bit at 1( 0) + 0 on 2987;
+  architecture a_reg01bit of reg01bit at 14( 235) + 0 on 2988;
+file . "ram.vhd" "c9738420baaf2a57d11c8a8c15063be0d341c9e7" "20251117202042.288":
+  entity ram at 1( 0) + 0 on 3005;
+  architecture a_ram of ram at 14( 331) + 0 on 3006;
