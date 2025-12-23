@@ -11,7 +11,7 @@ end entity;
 
 architecture a_topLevel of topLevel is
 
-    -- Componente: Program Counter
+    -- Componente: PC
     component PC is
         port (
             clk      : in std_logic;
@@ -137,7 +137,7 @@ architecture a_topLevel of topLevel is
         endereco_rel   : out unsigned(6 downto 0)
         );
     end component;
-
+    --Componente: RAM
     component ram is 
         port( 
          clk      : in std_logic;
@@ -176,13 +176,14 @@ architecture a_topLevel of topLevel is
     signal uc_instr_b_en             : std_logic;
     signal uc_instr_lw_en            : std_logic;
     signal uc_instr_sw_en            : std_logic;
-    
+
+    --Sinais do Banco    
     signal bancreg_data   : unsigned(15 downto 0);
     signal bancreg_wr_en  : std_logic;
     signal bancreg_reg_wr : unsigned(2 downto 0);
     signal bancreg_reg_r1 : unsigned(2 downto 0);
     signal bancreg_out    : unsigned(15 downto 0);
-    
+    --Sinais da ula
     signal ula_a          : unsigned(15 downto 0);
     signal ula_a_in       : unsigned(15 downto 0);
     signal ula_b          : unsigned(15 downto 0);
@@ -190,7 +191,7 @@ architecture a_topLevel of topLevel is
     signal ula_out        : unsigned(15 downto 0);
     signal ula_carry      : std_logic;
     signal ula_overflow   : std_logic;
-    
+    --Sinais dos acumuladores
     signal acc_wr_en      : std_logic;
     signal acc_sel        : std_logic;
     signal acc_data_wr    : unsigned(15 downto 0);
@@ -209,7 +210,7 @@ architecture a_topLevel of topLevel is
     --Sinal do somador de endereço relativo
     signal endereco_rel_out : unsigned(6 downto 0);
 
-    --Sinal da ram
+    --Sinal da RAM
     signal endereco_in_ram: unsigned(7 downto 0);
     signal ram_in : unsigned(15 downto 0);
     signal ram_out : unsigned(15 downto 0);
@@ -333,6 +334,8 @@ begin
             endereco_rel   => endereco_rel_out
         );
 
+
+    -- Instância da RAM
     ram_inst: ram
         port map (
             clk   => clk,
@@ -355,10 +358,11 @@ begin
     else ula_out when uc_instr_ula_en = '1' 
     else bancreg_out when uc_instr_mov_acc_rn_en = '1'
     else ram_out when uc_instr_lw_en = '1' 
-    else (others=>'0'); --mux que controla o que vai pro acc;
+    else (others=>'0'); --mux que controla o que vai pro acc: constante externa, resultado da ula, mov do banco ou carregar dado da RAM
     
     ula_a <= const_ext when uc_instr_cmpi_en='1' 
     else bancreg_out; -- mux que controla se é cmpi ou não
+        
     --ULA
     ula_b <= acc_out; 
     ula_a_in <= ula_a;

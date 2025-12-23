@@ -18,7 +18,7 @@ begin
         if rst = '1' then
             estado_s <= "00";
         elsif rising_edge(clk) then
-            if estado_s = "11" then
+            if estado_s = "11" then --Maquina com quatro estados
                 estado_s <= "00";
             else
                 estado_s <= estado_s + 1;

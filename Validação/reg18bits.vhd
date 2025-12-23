@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
+-- usado no registrador de instruções
 entity reg18bits is
     port(
         clk,wr_en,reset: in std_logic;

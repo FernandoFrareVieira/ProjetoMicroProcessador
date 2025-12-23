@@ -28,8 +28,6 @@ architecture a_bancoreg of bancoreg is
 
     signal temp_data_in : unsigned(15 downto 0);
     signal temp_data_out : unsigned(15 downto 0);
-    --Jeito Antigo
-    --signal r0, r1, r2, r3, r4, r5, r6, r7 : unsigned(15 downto 0);
     signal r0_data_out, r1_data_out, r2_data_out, r3_data_out, r4_data_out, r5_data_out, r6_data_out, r7_data_out : unsigned(15 downto 0);
     signal wr_en_r0, wr_en_r1, wr_en_r2, wr_en_r3, wr_en_r4, wr_en_r5, wr_en_r6, wr_en_r7 : std_logic;
 
@@ -100,16 +98,6 @@ begin
     wr_en_r5 <= wr_en when reg_wr = "101" else '0';
     wr_en_r6 <= wr_en when reg_wr = "110" else '0';
     wr_en_r7 <= wr_en when reg_wr = "111" else '0';
-
-    --Jeito Antigo    
-    --r0 <= data_wr when reg_wr = "000" else "0000000000000000";
-    --r1 <= data_wr when reg_wr = "001" else "0000000000000000";
-    --r2 <= data_wr when reg_wr = "010" else "0000000000000000";
-    --r3 <= data_wr when reg_wr = "011" else "0000000000000000";
-    --r4 <= data_wr when reg_wr = "100" else "0000000000000000";
-    --r5 <= data_wr when reg_wr = "101" else "0000000000000000";
-    --r6 <= data_wr when reg_wr = "110" else "0000000000000000";
-    --r7 <= data_wr when reg_wr = "111" else "0000000000000000";
 
     data_out <= r0_data_out when reg_r1 = "000" else
                 r1_data_out when reg_r1 = "001" else

@@ -37,7 +37,7 @@ architecture a_ULA of ULA is
         --Operações
         op_soma <= A + B;
         
-        -- SUB/CMPI: escolhe operandos dinamicamente
+        -- SUB/CMPI: escolhe operandos dinamicamente para fazer do Acumulador com a constante, não o contrário
         operador_esquerdo <= A when instr_cmpi = '0' else B;
         operador_direito  <= B when instr_cmpi = '0' else A;
         op_sub <= operador_esquerdo - operador_direito;

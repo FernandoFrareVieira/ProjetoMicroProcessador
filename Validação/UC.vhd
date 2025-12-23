@@ -4,33 +4,33 @@ use ieee.numeric_std.all;
 
 entity UC is
     port (
-        instruc : in UNSIGNED(17 downto 0);
-        clk   : in std_logic;
-        reset : in std_logic;
-        carry_in : in std_logic;
-        overflow_in : in std_logic;
-        zero_in : in std_logic;
-        negative_in : in std_logic;
+        instruc : in UNSIGNED(17 downto 0);  -- Palavra de instrução já lida da ROM (formato codificado)
+        clk     : in std_logic;              -- Clock do sistema
+        reset   : in std_logic;              -- Reset síncrono/assíncrono das lógicas de controle
+        carry_in     : in std_logic;         -- Valor atual da flag Carry vindo do bloco de flags
+        overflow_in  : in std_logic;         -- Valor atual da flag Overflow vindo do bloco de flags
+        zero_in      : in std_logic;         -- Valor atual da flag Zero vindo do bloco de flags
+        negative_in  : in std_logic;         -- Valor atual da flag Negative vindo do bloco de flags
 
-        --sinais de controle
-        pc_wr_en : out std_logic; -- Escreve no PC
-        reg_instr_wr_en : out std_logic; -- Registrador de instrução
-        jump_en : out std_logic;   -- Comando de Jump que controla o MUX do jump
-        banco_wr_en : out std_logic;
-        ram_wr_en : out std_logic;
-        acc_wr_en : out std_logic;
-        estado_atual :  out UNSIGNED(1 downto 0);
-        instr_ld_rn_const_en : out std_logic; -- LD rn cons
-        instr_mov_rn_acc_en : out std_logic; -- MOV rn acc;
-        instr_mov_acc_rn_en : out std_logic; -- MOV acc rn;
-        instr_ld_acc_const_en : out std_logic; -- LD acc cons
-        instr_ula_en : out std_logic;
-        instr_b_en : out std_logic;
-        instr_cmpi_en : out std_logic;
-        instr_lw_en : out std_logic;
-        instr_sw_en : out std_logic;
-        select_ula_op : out unsigned(1 downto 0);
-        const : out unsigned(7 downto 0)     -- Constante em Complemento de 2 Direto da UC
+        -- Sinais de controle gerados pela UC
+        pc_wr_en            : out std_logic;        -- Habilita escrita/atualização do PC no ciclo adequado
+        reg_instr_wr_en     : out std_logic;        -- Carrega nova instrução no registrador de instrução 
+        jump_en             : out std_logic;        -- Indica que a instrução corrente é JUMP (seleciona endereço absoluto)
+        banco_wr_en         : out std_logic;        -- Habilita escrita em registrador geral (LD rn const ou MOV rn <- Acc)
+        ram_wr_en           : out std_logic;        -- Habilita escrita na RAM (instrução SW)
+        acc_wr_en           : out std_logic;        -- Habilita escrita em acumulador (LD acc, MOV acc, ULA, LW)
+        estado_atual        : out UNSIGNED(1 downto 0); -- Estado interno da máquina 
+        instr_ld_rn_const_en: out std_logic;        -- Decodificador: instrução LD Rn, const ativa
+        instr_mov_rn_acc_en : out std_logic;        -- Decodificador: MOV Rn <- Acc ativa
+        instr_mov_acc_rn_en : out std_logic;        -- Decodificador: MOV Acc <- Rn ativa
+        instr_ld_acc_const_en: out std_logic;       -- Decodificador: LD Acc <- const ativa
+        instr_ula_en        : out std_logic;        -- Indica instrução de operação ULA (seleção da fonte de resultado)
+        instr_b_en          : out std_logic;        -- Indica que é algum branch relativo (BVC/BHI/CNJE) aprovado pela condição
+        instr_cmpi_en       : out std_logic;        -- Indica instrução CMPI (comparação Acc e constante)
+        instr_lw_en         : out std_logic;        -- Indica instrução LW (leitura RAM para Acc)
+        instr_sw_en         : out std_logic;        -- Indica instrução SW (escrita Acc na RAM)
+        select_ula_op       : out unsigned(1 downto 0); -- Código da operação da ULA (00=ADD, 01=SUB/CMPI/CNJE, 10=NAND, 11=XOR)
+        const               : out unsigned(7 downto 0)  -- Campo de constante extraído da instrução (8 bits, com extensão de sinal fora)
     );
 end entity;
 
@@ -94,14 +94,14 @@ architecture a_UC of UC is
     );
     end component;
 begin
-
+    -- Instância da Maq de estados
     maq_estados_inst: maq_estados
      port map(
         clk => clk,
         rst => reset,
         estado => estado
     );
-
+    -- Instância do registrados das flags de controle
     reg01bit_inst_carry: reg01bit
     port map (
         clk => clk,

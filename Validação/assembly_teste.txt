@@ -1,0 +1,61 @@
+| Endereço | Assembly           | Comentário (Lógica do Teste)              |
+| :------- | :----------------- | :---------------------------------------- |
+| INIT     |                    | -- Teste de NOP e JUMP --                 |
+| 0        | NOP                | (No Operation)                            |
+| 1        | NOP                | (No Operation)                            |
+| 2        | NOP                | (No Operation)                            |
+| 3        | JUMP 8             | (Salta para o endereço 8)                 |
+|          |                    |                                           |
+| ULA      | TESTE_REGS         | -- Teste A/B e Operações Lógicas --       |
+| 8        | LD B, 10           | (Acc B <- 10)                             |
+| 9        | LD R0, 11          | (R0 <- 11)                                |
+| 10       | MOV A, R0          | (Acc A <- R0)                             |
+| 11       | MOV R1, B          | (R1 <- Acc B)                             |
+| 12       | ADD A, R0          | (Acc A <- 11 + 11 = 22)                   |
+| 13       | SUB B, R1          | (Acc B <- 10 - 10 = 0)                    |
+| 14       | NAND B, R0         | (Acc B <- 11 NAND 0)                      |
+| 15       | XOR A, R1          | (Acc A <- 22 XOR 10)                      |
+|          |                    |                                           |
+| FLAGS    | TESTE_BRANCH       | -- Teste de Comparação e Salto --         |
+| 16       | CMPI A, 50         | (Compara A com 50. Como A < 50, flag ativa)|
+| 17       | BHI 4              | (Branch If Higher. Não salta)             |
+| 18       | CMPI A, 20         | (Compara A com 20)                        |
+| 19       | BHI 3              | (Branch If Higher. Salta para 22)         |
+|          |                    |                                           |
+| OVF      | STRESS_OVF         | -- Stress Test: Overflow --               |
+| 22       | LD A, 127          | (A <- 127. Máx positivo 8 bits)           |
+| 23       | ADD A, R2          | (Acc A <- A + R2)                         |
+| 24       | MOV R2, A          | (R2 <- Acc A)                             |
+| 25       | ADD A, R2          | (Acc A <- A + R2)                         |
+| 26       | MOV R2, A          | (R2 <- Acc A)                             |
+| 27       | ADD A, R2          | (Acc A <- A + R2)                         |
+| 28       | MOV R2, A          | (R2 <- Acc A)                             |
+| 29       | ADD A, R2          | (Acc A <- A + R2)                         |
+| 30       | MOV R2, A          | (R2 <- Acc A)                             |
+| 31       | ADD A, R2          | (Acc A <- A + R2)                         |
+| 32       | MOV R2, A          | (R2 <- Acc A)                             |
+| 33       | ADD A, R2          | (Acc A <- A + R2)                         |
+| 34       | MOV R2, A          | (R2 <- Acc A)                             |
+| 35       | ADD A, R2          | (Acc A <- A + R2)                         |
+| 36       | MOV R2, A          | (R2 <- Acc A)                             |
+| 37       | ADD A, R2          | (Acc A <- A + R2)                         |
+| 38       | MOV R2, A          | (R2 <- Acc A)                             |
+| 39       | ADD A, R2          | (Acc A <- A + R2)                         |
+| 40       | MOV R2, A          | (R2 <- Acc A)                             |
+| 41       | ADD A, R2          | (Acc A <- A + R2)                         |
+| 42       | MOV R2, A          | (Fim do loop)                             |
+|          |                    |                                           |
+| COND     | TESTE_BVC          | -- Teste Branch No Overflow --            |
+| 43       | BVC 8              | (Branch if No Overflow)                   |
+| 44       | CMPI B, -2         | (Compara para limpar as flags)            |
+| 45       | BVC 8              | (Branch if No Overflow. Salta para 49)    |
+|          |                    |                                           |
+| CNJE     | TESTE_LOOP         | -- Teste Loop e Memória --                |
+| 49       | LD R0, -1          | (R0 <- -1)                                |
+| 50       | CNJE B, R0, 3      | (Se B == -1, não salta. Segue para 51)      |
+| 51       | ADD B, R1          | (Altera valor de B)                       |
+| 52       | CNJE B, R0, 3      | (Se B != -1, salta p/ 55)                 |
+|          |                    |                                           |
+| MEM      | RW_RAM             | -- Leitura e Escrita RAM --               |
+| 55       | SW [R1], A         | (Grava Acc A na memória)                  |
+| 56       | LW B, [R1]         | (Lê da memória para Acc B)                |

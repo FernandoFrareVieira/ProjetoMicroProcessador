@@ -1,0 +1,82 @@
+| Endereço | Assembly           | Comentário                               |
+|          |                    |                                          |
+| 0        | LD R0, 1           | (R0 = 1, Valor inicial)                  |
+| 1        | LD R1, 111         | (R1 = 111, Ponteiro RAM)                 |
+| 2        | LD R2, 33          | (R2 = 33, Limite 33)                     |
+| 3        | LD R3, 1           | (R3 = 1, Passo unitário)                 |
+|          |                    |                                          |
+| 4        | LOOP_INIT: MOV AccA, R0 | (AccA <- Valor atual)               |
+| 5        | SW [R1], AccA      | (RAM[R1] <- AccA)                        |
+| 6        | MOV AccA, R0       | (AccA <- Valor atual)                    |
+| 7        | ADD AccA, R3       | (AccA <- Valor + 1)                      |
+| 8        | MOV R0, AccA       | (R0 <- AccA, Atualiza Valor)             |
+| 9        | MOV AccA, R1       | (AccA <- Ponteiro atual)                 |
+| 10       | ADD AccA, R3       | (AccA <- Ponteiro + 1)                   |
+| 11       | MOV R1, AccA       | (R1 <- AccA, Atualiza Ponteiro)          |
+| 12       | MOV AccA, R0       | (AccA <- Valor, para comparar)           |
+| 13       | CNJE R2, AccA, -9  | (Se 33 != Valor, volta para LOOP_INIT)   |
+|          |                    |                                          |
+| 14       | LD R1, 114         | (R1 = 114, Início no num 4)              |
+| 15       | LD R3, 2           | (R3 = 2, Passo)                          |
+| 16       | LD R4, 0           | (R4 = 0, Valor para zerar memória)       |
+| 17       | LD R2, 72          | (R2 = 72, Parte 1 do limite 144)         |
+| 18       | MOV AccA, R2       | (AccA <- 72)                             |
+| 19       | ADD AccA, R2       | (AccA <- 72 + 72, Soma para obter 144)   |
+| 20       | MOV R2, AccA       | (R2 = 144, Limite Final)                 |
+|          |                    |                                          |
+| 21       | LOOP_2: MOV AccA, R4 | (AccA <- 0)                            |
+| 22       | SW [R1], AccA      | (RAM[R1] <- 0, Risca número)             |
+| 23       | MOV AccA, R1       | (AccA <- Ponteiro atual)                 |
+| 24       | ADD AccA, R3       | (AccA <- Ponteiro + 2)                   |
+| 25       | MOV R1, AccA       | (R1 <- AccA, Atualiza Ponteiro)          |
+| 26       | CNJE R2, AccA, -5  | (Se 144 != Ponteiro, volta para LOOP_2)  |
+|          |                    |                                          |
+| 27       | LD R1, 116         | (R1 = 116, Início no num 6)              |
+| 28       | LD R3, 3           | (R3 = 3, Passo)                          |
+| 29       | LD R2, 71          | (R2 = 71, Parte 1 do limite 143)         |
+| 30       | MOV AccA, R2       | (AccA <- 71)                             |
+| 31       | LD R2, 72          | (R2 = 72, Parte 2 do limite 143)         |
+| 32       | ADD AccA, R2       | (AccA <- 71 + 72, Soma para obter 143)   |
+| 33       | MOV R2, AccA       | (R2 = 143, Limite Final)                 |
+|          |                    |                                          |
+| 34       | LOOP_3: MOV AccA, R4 | (AccA <- 0)                            |
+| 35       | SW [R1], AccA      | (RAM[R1] <- 0, Risca número)             |
+| 36       | MOV AccA, R1       | (AccA <- Ponteiro atual)                 |
+| 37       | ADD AccA, R3       | (AccA <- Ponteiro + 3)                   |
+| 38       | MOV R1, AccA       | (R1 <- AccA, Atualiza Ponteiro)          |
+| 39       | CNJE R2, AccA, -5  | (Se 143 != Ponteiro, volta para LOOP_3)  |
+|          |                    |                                          |
+| 40       | LD R1, 120         | (R1 = 120, Início no num 10)             |
+| 41       | LD R3, 5           | (R3 = 5, Passo)                          |
+| 42       | LD R2, 72          | (R2 = 72, Parte 1 do limite 145)         |
+| 43       | MOV AccA, R2       | (AccA <- 72)                             |
+| 44       | LD R2, 73          | (R2 = 73, Parte 2 do limite 145)         |
+| 45       | ADD AccA, R2       | (AccA <- 72 + 73, Soma para obter 145)   |
+| 46       | MOV R2, AccA       | (R2 = 145, Limite Final)                 |
+|          |                    |                                          |
+| 47       | LOOP_5: MOV AccA, R4 | (AccA <- 0)                            |
+| 48       | SW [R1], AccA      | (RAM[R1] <- 0, Risca número)             |
+| 49       | MOV AccA, R1       | (AccA <- Ponteiro atual)                 |
+| 50       | ADD AccA, R3       | (AccA <- Ponteiro + 5)                   |
+| 51       | MOV R1, AccA       | (R1 <- AccA, Atualiza Ponteiro)          |
+| 52       | CNJE R2, AccA, -5  | (Se 145 != Ponteiro, volta para LOOP_5)  |
+|          |                    |                                          |
+| 53       | LD R1, 111         | (R1 = 111, Reinicia Ponteiro)            |
+| 54       | LD R3, 1           | (R3 = 1, Passo unitário)                 |
+| 55       | LD R2, 71          | (R2 = 71, Parte 1 do limite 143)         |
+| 56       | MOV AccA, R2       | (AccA <- 71)                             |
+| 57       | LD R2, 72          | (R2 = 72, Parte 2 do limite 143)         |
+| 58       | ADD AccA, R2       | (AccA <- 71 + 72, Soma para obter 143)   |
+| 59       | MOV R2, AccA       | (R2 = 143, Limite Final)                 |
+| 60       | LD R4, 0           | (R4 = 0, Para filtro de comparação)      |
+|          |                    |                                          |
+| 61       | LOOP_PRINT: LW AccB, [R1] | (AccB <- Valor RAM, usa Accumulador B)|
+| 62       | CNJE R4, AccB, +2  | (Se 0 != AccB, Pula p/ 64. É Primo!)     |
+| 63       | JUMP 65            | (Se 0 == AccB, Pula p/ 65. Ignora)       |
+| 64       | MOV R5, AccB       | (R5 <- AccB. Mostra Primo no pino R5)    |
+| 65       | MOV AccA, R1       | (AccA <- Ponteiro, usa Accumulador A)    |
+| 66       | ADD AccA, R3       | (AccA <- Ponteiro + 1)                   |
+| 67       | MOV R1, AccA       | (R1 <- AccA, Atualiza Ponteiro)          |
+| 68       | CNJE R2, AccA, -7  | (Se 143 != Ponteiro, volta p/ LOOP_PRINT)|
+|          |                    |                                          |
+| 69       | HALT: JUMP 69      | (Loop Infinito, fim do programa)         |

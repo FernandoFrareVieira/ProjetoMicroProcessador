@@ -27,7 +27,8 @@ VHDL_SOURCES = \
 	reg18bits.vhd \
 	maq_estados.vhd \
 	somador1_7bits.vhd \
-	ext_sinal7p16.vhd \
+	ext_sinal8p16.vhd \
+	somador_endereco_relativo.vhd \
 	ULA.vhd \
 	rom.vhd \
 	PC.vhd \

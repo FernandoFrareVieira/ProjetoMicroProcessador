@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
+-- usado no registrado do banco
 entity reg16bits is
     port(
         clk,wr_en,reset: in std_logic;
@@ -9,7 +9,6 @@ entity reg16bits is
         data_out: out unsigned(15 downto 0)
     );
 end entity;
-
 
 architecture a_reg16bits of reg16bits is  
 signal registro: unsigned(15 downto 0);

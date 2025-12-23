@@ -14,7 +14,7 @@ architecture a_somador_endereco_relativo of somador_endereco_relativo is
     signal endereco_pc_menos1 : unsigned(6 downto 0);
 begin
 
-endereco_pc_menos1 <= endereco_pc - 1;
+endereco_pc_menos1 <= endereco_pc - 1; -- corrige o deslocamento do PC
 endereco_rel <= endereco_pc_menos1 + deslocamento;
 
 end architecture;

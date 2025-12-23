@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-
+-- usado para o pc+1 do top-level
 entity somador1_7bits is
     port (
         data_in : in unsigned(6 downto 0);
